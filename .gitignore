@@ -4,3 +4,6 @@
 # Ignore Gradle build output directory
 build
 /bin/
+
+#Credentials json file. It contails a client secret info which should be private
+src/main/resources/credentials.json
