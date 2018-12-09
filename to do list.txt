@@ -1,0 +1,11 @@
+1. access user's email account
+2. parse user's inbox
+3. find youtube videos
+4. add videos to list
+5. create playlists by date
+6. confirm that videos are in playlist
+7. delete videos
+
+?. set up database
+
+??. create gui
