@@ -1,0 +1,3 @@
+development notes
+
+when scopes or users are changed, the tokens folder needs to be deleted
