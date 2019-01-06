@@ -28,93 +28,20 @@ import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
 
 public class YouTubeProgramMain {
-    private static final String APPLICATION_NAME = "Gmail API Java Quickstart";
-    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
-
-    /**
-     * Global instance of the scopes required by this quickstart.
-     * If modifying these scopes, delete your previously saved tokens/ folder.
-     */
-    //MAIL_GOOGLE_COM gives a lot of permissions
-    private static final List<String> SCOPES = Collections.singletonList(GmailScopes.MAIL_GOOGLE_COM);
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-
-    /**
-     * Creates an authorized Credential object.
-     * @param HTTP_TRANSPORT The network HTTP Transport.
-     * @return An authorized Credential object.
-     * @throws IOException If the credentials.json file cannot be found.
-     */
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
-        // Load client secrets.
-        InputStream in = YouTubeProgramMain.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
-
-        // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-                .setAccessType("offline")
-                .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-    }
-    
-    ///
-    public static List<Message> listMessagesMatchingQuery(Gmail service, String userId,
-    	      String query) throws IOException {
-    	    ListMessagesResponse response = service.users().messages().list(userId).setQ(query).execute();
-
-    	    List<Message> messages = new ArrayList<Message>();
-    	    while (response.getMessages() != null) {
-    	      messages.addAll(response.getMessages());
-    	      if (response.getNextPageToken() != null) {
-    	        String pageToken = response.getNextPageToken();
-    	        response = service.users().messages().list(userId).setQ(query)
-    	            .setPageToken(pageToken).execute();
-    	      } else {
-    	        break;
-    	      }
-    	    }
-
-    	    for (Message message : messages) {
-    	    	System.out.println(message.getSizeEstimate());
-    	    	System.out.println(message.toPrettyString());
-
-    	    }
-
-    	    return messages;
-    	  }
-    ///
 
     public static void main(String... args) throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
+    	
+    	GmailMethods gmailMethods = new GmailMethods();
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME)
+        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, gmailMethods.JSON_FACTORY, gmailMethods.getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(gmailMethods.APPLICATION_NAME)
                 .build();
-
-        // Print the labels in the user's account.
-        //String user = "me";
-        /*
-        String user = "mountedczarina@gmail.com";
-        ListLabelsResponse listResponse = service.users().labels().list(user).execute();
-        List<Label> labels = listResponse.getLabels();
-        if (labels.isEmpty()) {
-            System.out.println("No labels found.");
-        } else {
-            System.out.println("Labels:");
-            for (Label label : labels) {
-                System.out.printf("- %s\n", label.getName());
-            }
-        }
-        */
         
-        String user = "mountedczarina@gmail.com";
-        String query = "from:countzander@icloud.com";
-        listMessagesMatchingQuery(service, user, query);
-        
+        //String user = "mountedczarina@gmail.com";
+        String query = "from:joreyjorey@live.com";
+        List<Message> list = GmailMethods.listMessagesMatchingQuery(service, "me", query);
+        System.out.println( GmailMethods.getMessage(service, "me", list.get(0).getId()).toPrettyString()  );
         
     }
 }

@@ -1,7 +1,0 @@
-You need Java 11.
-
-You need an IDE, ideally Eclipse because it's the best.
-
-You need to Gradle in order to build the project since it uses some of Google's APIs.
-
-You need a credentials.json file. You can get one by setting up a Google developer account. When setting up a Google developer account, specify that you want access to the Gmail and YouTube APIs. Once you have one, place it into "src/main/resources".
