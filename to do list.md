@@ -1,27 +1,30 @@
 #The Great To-Do List
 
-Stuff that needs to be done.
+Stuff that needs to be done so that the app will do what it's supposed to do.
 
 ## Implement logic for...
 
-*	Primary tasks.
-..*	Accessing user's email account (done!)
-..* parsing user's inbox
-..* finding youtube videos
-..* adding videos to list
-..* creating playlists by date or author
-..* confirming that videos are in playlist
-..* deleting videos or sending them to trash
++ Primary tasks
+    1. Accessing user's email account. (done!)
+    2. Parsing user's inbox. (done!)
+    3. Finding youtube video emails. (done!)
+    4. Adding YouTube video emails to list. (done!)
+    5. Creating playlists by date or author.
+    6. Confirming that videos are in playlist.
+    7. Deleting videos or sending them to trash.
 
-*	Secondary tasks
-..*	deleting old token when user or gmail scope changes
++ Secondary tasks
+    1. Deleting old token when user or gmail scope changes.
+    2. A better entry point.
 
 ## Fix errors
 
-Check errors.md for current errors.
+Check [errors.md](https://github.com/jmcart9/YouTubeProgram/blob/master/errors.md) for current errors.
 
 ## Other stuff
 
-*	Set up database. Database should contain user credentials with user id as the primary key. needs to be encrypted
+* Set up database. Database should contain user credentials with user id as the primary key. Needs to be encrypted.
 
-*	Create gui.
+* Create GUI.
+
+* Find a better name for the app.
