@@ -2,12 +2,11 @@ package main.java.quickstart;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-
+import java.util.Base64;
 import java.util.List;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.util.Base64;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 
@@ -32,7 +31,11 @@ public class YouTubeProgramMain {
         System.out.println(x);
         String xCut = x.substring(9, x.indexOf("\"", 10));
         System.out.println(xCut);
-        System.out.println(Base64.decodeBase64(xCut));
+        //System.out.println(Base64.decodeBase64(xCut));
+        
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        byte[] decoded = decoder.decode(xCut);
+        System.out.println("Decoded: " + new String(decoded));
         
     }
 }
