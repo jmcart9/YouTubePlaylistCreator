@@ -30,7 +30,9 @@ public class YouTubeProgramMain {
         //System.out.println( m.toPrettyString()  );
         String x = m.getPayload().getParts().get(0).get("body").toString();
         System.out.println(x);
-        //Base64.decodeBase64();
+        String xCut = x.substring(9, x.indexOf("\"", 10));
+        System.out.println(xCut);
+        System.out.println(Base64.decodeBase64(xCut));
         
     }
 }
