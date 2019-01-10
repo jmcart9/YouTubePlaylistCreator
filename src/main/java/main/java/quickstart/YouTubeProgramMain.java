@@ -24,18 +24,10 @@ public class YouTubeProgramMain {
         //String user = "mountedczarina@gmail.com";
         String query = "The Infographics Show";
         List<Message> list = GmailMethods.listMessagesMatchingQuery(service, "me", query);
-        System.out.println(list.size());
-        Message m = GmailMethods.getMessage(service, "me", list.get(0).getId());
-        //System.out.println( m.toPrettyString()  );
-        String x = m.getPayload().getParts().get(0).get("body").toString();
-        System.out.println(x);
-        String xCut = x.substring(9, x.indexOf("\"", 10));
-        System.out.println(xCut);
-        //System.out.println(Base64.decodeBase64(xCut));
         
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        byte[] decoded = decoder.decode(xCut);
-        System.out.println("Decoded: " + new String(decoded));
+        Message m = GmailMethods.getMessage(service, "me", list.get(0).getId());       
+        
+        System.out.println(GmailMethods.getVideoUrl(m));
         
     }
 }

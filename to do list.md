@@ -9,9 +9,10 @@ Stuff that needs to be done so that the app will do what it's supposed to do.
     2. Parsing user's inbox. (done!)
     3. Finding youtube video emails. (done!)
     4. Adding YouTube video emails to list. (done!)
-    5. Creating playlists by date or author.
-    6. Confirming that videos are in playlist.
-    7. Deleting videos or sending them to trash.
+    5.	Adding video URLs to list. 
+    6. Creating playlists by date or author.
+    7. Confirming that videos are in playlist.
+    8. Deleting videos or sending them to trash.
 
 + Secondary tasks
     1. Deleting old token when user or gmail scope changes.
@@ -19,7 +20,7 @@ Stuff that needs to be done so that the app will do what it's supposed to do.
 
 ## Fix errors
 
-Check [errors.md](https://github.com/jmcart9/YouTubeProgram/blob/master/errors.md) for current errors.
+Check [errors](https://github.com/jmcart9/YouTubeProgram/blob/master/errors.md) for current errors.
 
 ## Other stuff
 
@@ -28,3 +29,5 @@ Check [errors.md](https://github.com/jmcart9/YouTubeProgram/blob/master/errors.m
 * Create GUI.
 
 * Find a better name for the app.
+
+* Create a version of the application by using the MEAN stack.

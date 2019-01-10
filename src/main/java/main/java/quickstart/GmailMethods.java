@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,5 +85,16 @@ public class GmailMethods {
 
   	    return message;
   	  }
+  
+  //return the video url of a YouTube email message
+  public static String getVideoUrl(Message m) {
+	  String messageBody64 = m.getPayload().getParts().get(0).get("body").toString();
+	  messageBody64 = messageBody64.substring(9, messageBody64.indexOf("\"", 10));
+	  Base64.Decoder decoder = Base64.getUrlDecoder();
+      byte[] decoded = decoder.decode(messageBody64);
+      String messageBodyS = new String(decoded);
+      int i = messageBodyS.indexOf("http://www.youtube.com/watch?");
+      return messageBodyS.substring(i, messageBodyS.indexOf("&", i));
+  }
 	
 }

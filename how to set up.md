@@ -6,3 +6,4 @@ You need Gradle in order to build the project. Gradle imports some of Google's A
 
 You need a credentials.json file. You can get one by setting up a Google developer account. When setting up a Google developer account, specify that you want access to the Gmail and YouTube APIs. Once you have a credentials file, place it into "src/main/resources".
 
+Clone the repository!
