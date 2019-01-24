@@ -24,7 +24,6 @@ public class YouTubeProgramMain {
         //String user = "mountedczarina@gmail.com";
         String query = "The Infographics Show";
         List<Message> list = GmailMethods.listMessagesMatchingQuery(service, "me", query);
-        
         Message m = GmailMethods.getMessage(service, "me", list.get(0).getId());       
         
         System.out.println(GmailMethods.getVideoUrl(m));
