@@ -9,4 +9,4 @@ build
 src/main/resources/credentials.json
 
 #User tokens
-tokens/StoredCredential/
+tokens/StoredCredential
