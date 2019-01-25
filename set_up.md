@@ -8,4 +8,5 @@
 # Reccomended 
 * Notepad++. For editing 
 
-# How to set up development environment. 
+# How to set up development environment.
+* Install all the requisite technologies, if you have not already done so.
