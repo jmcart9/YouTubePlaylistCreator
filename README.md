@@ -5,7 +5,7 @@ I subscribe to a lot of informative YouTube channels. In fact, I subscribe to so
 
 There is a way to do that. Hence the existence of this application. 
 
-It's still a work in progress. If you want to try it or contribute to it, read [how to set up}(https://github.com/jmcart9/YouTubeProgram/blob/master/set_up.md).
+It's still a work in progress. If you want to try it or contribute to it, read [how to set up](https://github.com/jmcart9/YouTubeProgram/blob/master/set_up.md).
 
 ###### Technologies used.
 
