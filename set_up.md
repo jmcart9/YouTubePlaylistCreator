@@ -10,3 +10,10 @@
 
 # How to set up development environment.
 * Install all the requisite technologies, if you have not already done so.
+* Clone repository and import it into your IDE.
+* In Eclipse, right-click the project and then select "refresh gradle project" or whatever.
+* Place the `credentials.json` into src/main/resources. This file may need to be obtained by request. [See here.] (https://developers.google.com/gmail/api/quickstart/java)
+* In Eclipse, right-click the project and then select "refresh gradle project" or whatever.
+
+* From your Google Cloud account, get your credentials.json files and add it to the root
+* Ask me to add you to the project. 

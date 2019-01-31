@@ -24,7 +24,7 @@ import com.google.api.services.gmail.model.Message;
 
 public class GmailMethods {
 	
-	static final String APPLICATION_NAME = "YouTube Program";
+	static final String APPLICATION_NAME = "YouTube Playlist Creator";
     static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
