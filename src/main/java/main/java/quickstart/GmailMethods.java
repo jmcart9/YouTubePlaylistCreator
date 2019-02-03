@@ -30,6 +30,11 @@ public class GmailMethods {
 
     private static final List<String> SCOPES = Collections.singletonList(GmailScopes.MAIL_GOOGLE_COM);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+    
+    private List<String> videos;
+    private List<Message> emailMessageList;
+    private Gmail service;
+    private String query;
 
     /**
      * Creates an authorized Credential object.
@@ -52,49 +57,59 @@ public class GmailMethods {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 	
-    //return a list of messages from the user's inbox matching the query
-    public static List<Message> listMessagesMatchingQuery(Gmail service, String userId,
-  	      String query) throws IOException {
-  	    ListMessagesResponse response = service.users().messages().list(userId).setQ(query).execute();
+    //fill a list of email messages from the user's inbox matching the query
+    public void setEmailMessageList(Gmail service, String userId,
+    		String query) throws IOException {
+    	ListMessagesResponse response = service.users().messages().list(userId).setQ(query).execute();
 
   	    List<Message> messages = new ArrayList<Message>();
   	    while (response.getMessages() != null) {
-  	      messages.addAll(response.getMessages());
-  	      if (response.getNextPageToken() != null) {
-  	        String pageToken = response.getNextPageToken();
-  	        response = service.users().messages().list(userId).setQ(query)
-  	            .setPageToken(pageToken).execute();
-  	      } else {
-  	        break;
-  	      }
+  	    	messages.addAll(response.getMessages());
+  	    	if (response.getNextPageToken() != null) {
+  	    		String pageToken = response.getNextPageToken();
+  	    		response = service.users().messages().list(userId).setQ(query).setPageToken(pageToken).execute();
+  	    	} 
+  	    	else {
+  	    		break;
+  	    	}
   	    }
 
   	    for (Message message : messages) {
   	    	//System.out.println(message.toPrettyString());
   	    }
-
-  	    return messages;
+  	    
+  	    this.emailMessageList = messages;
   	  }
   
-  //return a message given its ID
-  public static Message getMessage(Gmail service, String userId, String messageId)
-  	      throws IOException {
-  	    Message message = service.users().messages().get(userId, messageId).execute();
-
-  	    //System.out.println("Message snippet: " + message.getSnippet());
-
-  	    return message;
-  	  }
+    public List<Message> getEmailMessageList() {
+    	return this.emailMessageList;
+    }
+    
+    //return a message given its ID
+    public Message getMessage(Gmail service, String userId, String messageId)
+	  	      throws IOException {
+    	Message message = service.users().messages().get(userId, messageId).execute();
+	
+	  	//System.out.println("Message snippet: " + message.getSnippet());
+	
+	  	return message;
+    }
   
-  //return the video url of a YouTube email message
-  public static String getVideoUrl(Message m) {
-	  String messageBody64 = m.getPayload().getParts().get(0).get("body").toString();
-	  messageBody64 = messageBody64.substring(9, messageBody64.indexOf("\"", 10));
-	  Base64.Decoder decoder = Base64.getUrlDecoder();
-      byte[] decoded = decoder.decode(messageBody64);
-      String messageBodyS = new String(decoded);
-      int i = messageBodyS.indexOf("http://www.youtube.com/watch?");
-      return messageBodyS.substring(i, messageBodyS.indexOf("&", i));
-  }
+    //return the video url of a YouTube email message
+	public String getVideoUrl(Message m) {
+		String messageBody64 = m.getPayload().getParts().get(0).get("body").toString();
+		messageBody64 = messageBody64.substring(9, messageBody64.indexOf("\"", 10));
+		Base64.Decoder decoder = Base64.getUrlDecoder();
+		byte[] decoded = decoder.decode(messageBody64);
+		String messageBodyS = new String(decoded);
+		int i = messageBodyS.indexOf("http://www.youtube.com/watch?");
+		return messageBodyS.substring(i, messageBodyS.indexOf("&", i));
+	}
+  
+	public void createVideoList() {
+		for(Message x : emailMessageList) {
+			videos.add(getVideoUrl(x));
+		}
+	}
 	
 }

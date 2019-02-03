@@ -15,18 +15,20 @@ public class YouTubeProgramMain {
     public static void main(String... args) throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
     	
-    	//GmailMethods gmailMethods = new GmailMethods();
+    	GmailMethods gmailMethods = new GmailMethods();
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, GmailMethods.JSON_FACTORY, GmailMethods.getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(GmailMethods.APPLICATION_NAME)
+        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, gmailMethods.JSON_FACTORY, gmailMethods.getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(gmailMethods.APPLICATION_NAME)
                 .build();
         
         //String user = "mountedczarina@gmail.com";
         String query = "The Infographics Show";
-        List<Message> list = GmailMethods.listMessagesMatchingQuery(service, "me", query);
-        Message m = GmailMethods.getMessage(service, "me", list.get(0).getId());       
+        gmailMethods.setEmailMessageList(service, "me", query);
         
-        System.out.println(GmailMethods.getVideoUrl(m));
-        
+        for(Message x : gmailMethods.getEmailMessageList()) {
+        	Message m = gmailMethods.getMessage(service, "me", x.getId());
+        	System.out.println(gmailMethods.getVideoUrl(m));
+        }
+            
     }
 }
