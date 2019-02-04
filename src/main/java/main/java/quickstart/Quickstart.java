@@ -1,4 +1,5 @@
 package main.java.quickstart;
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -25,7 +26,7 @@ import java.util.List;
 public class Quickstart {
 
     /** Application name. */
-    private static final String APPLICATION_NAME = "API Sample";
+    private static final String APPLICATION_NAME = "YouTube Playlist Creator";
 
     /** Directory to store user credentials for this application. */
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
@@ -109,12 +110,15 @@ public class Quickstart {
                 channel.getId(),
                 channel.getSnippet().getTitle(),
                 channel.getStatistics().getViewCount());
-        } catch (GoogleJsonResponseException e) {
+        } 
+        catch (GoogleJsonResponseException e) {
             e.printStackTrace();
             System.err.println("There was a service error: " +
                 e.getDetails().getCode() + " : " + e.getDetails().getMessage());
-        } catch (Throwable t) {
+        } 
+        catch (Throwable t) {
             t.printStackTrace();
         }
     }
 }
+

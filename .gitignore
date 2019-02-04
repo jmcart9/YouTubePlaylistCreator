@@ -7,6 +7,7 @@ build
 
 # Credentials json file. It contails a client secret info which should be private
 src/main/resources/credentials.json
+src/main/resources/client_secret.json
 
 # User tokens
 tokens/StoredCredential
