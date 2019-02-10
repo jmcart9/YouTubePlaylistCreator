@@ -10,13 +10,15 @@ Stuff that needs to be done so that the app will do what it's supposed to do.
     3. Finding youtube video emails. (done!)
     4. Adding YouTube video emails to list. (done!)
     5. Adding video URLs to list. (done!)
-    6. Creating playlists by date or author.
-    7. Confirming that videos are in playlist.
-    8. Deleting videos or sending them to trash.
+    6. Creating playlists.
+    8. Creating playlists by different categories, eg date and author.
+    9. Confirming that videos are in playlist.
+    10. Deleting videos or sending them to trash.
 
 + Secondary tasks
     1. Deleting old token when user or gmail scope changes.
     2. A better entry point.
+    3. One (overloaded?) method for authenticating both Gmail and YouTube HTTP requests.
 
 ## Fix errors
 
