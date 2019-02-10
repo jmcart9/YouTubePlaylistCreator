@@ -31,14 +31,10 @@ public class YouTubeProgramMain {
         
     	// Build a new authorized API client service.
     	GmailMethods gmailMethods = new GmailMethods();
-        //final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        //Gmail service = new Gmail.Builder(HTTP_TRANSPORT, gmailMethods.JSON_FACTORY, gmailMethods.getCredentials(HTTP_TRANSPORT))
-            //    .setApplicationName(gmailMethods.APPLICATION_NAME)
-           //     .build();
     	
     	Credential credential = AuthGmail.authorize();
     	Gmail service = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
-            .setApplicationName(gmailMethods.APPLICATION_NAME)
+            .setApplicationName("YouTube Playlist Creator")
             .build();
         
         String query = "The Infographics Show";
