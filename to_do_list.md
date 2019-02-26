@@ -12,10 +12,9 @@ Stuff that needs to be done so that the app will do what it's supposed to do.
     5. Adding video URLs to list. (done!)
     6. Creating playlists. (done!)
     7. Adding videos to playlists.
-    8. 
-    9. Creating playlists by different categories, eg date and author.
-    10. Confirming that videos are in playlist.
-    11. Deleting videos or sending them to trash.
+    8. Creating playlists by different categories, eg date and author.
+    9. Confirming that videos are in playlist.
+    10. Deleting videos or sending them to trash.
 
 + Secondary tasks
     1. Deleting old token when user or gmail scope changes.

@@ -17,4 +17,5 @@ tokens/StoredCredential
 # Development idiosyncratic things
 .project
 .classpath
+.classpath/
 .settings/
