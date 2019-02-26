@@ -13,7 +13,10 @@ import com.google.api.services.gmail.model.Message;
 
 public class GmailMethods {
     
+	//list of video urls
     private List<String> videos;
+    
+    //list of emails
     private List<Message> emailMessageList;
 	
     //fill a list of email messages from the user's inbox matching the query
@@ -36,6 +39,7 @@ public class GmailMethods {
   	    this.emailMessageList = messages;
   	  }
   
+    //getter for list of emails
     public List<Message> getEmailMessageList() {
     	return this.emailMessageList;
     }
@@ -61,10 +65,16 @@ public class GmailMethods {
 		return messageBodyS.substring(i, messageBodyS.indexOf("&", i));
 	}
   
+	//create list of video urls
 	public void createVideoList() {
 		for(Message x : emailMessageList) {
 			videos.add(getVideoUrl(x));
 		}
+	}
+	
+	//return list of video urls
+	public List<String> getVideoUrls(){
+		return videos;
 	}
 	
 	//Robust method for extracting video id from URL.
