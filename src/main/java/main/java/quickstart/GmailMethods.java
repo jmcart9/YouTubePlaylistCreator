@@ -56,6 +56,7 @@ public class GmailMethods {
   
     //return the video url of a YouTube email message
 	public String getVideoUrl(Message m) {
+		//message as a base 64 string
 		String messageBody64 = m.getPayload().getParts().get(0).get("body").toString();
 		messageBody64 = messageBody64.substring(9, messageBody64.indexOf("\"", 10));
 		Base64.Decoder decoder = Base64.getUrlDecoder();
@@ -63,6 +64,18 @@ public class GmailMethods {
 		String messageBodyS = new String(decoded);
 		int i = messageBodyS.indexOf("http://www.youtube.com/watch?");
 		return messageBodyS.substring(i, messageBodyS.indexOf("&", i));
+	}
+	
+	//return the uploader of a video
+	public String getVideoUploader(Message m) {
+		//message as a base 64 string
+		String messageBody64 = m.getPayload().getParts().get(0).get("body").toString();
+		messageBody64 = messageBody64.substring(9, messageBody64.indexOf("\"", 10));
+		Base64.Decoder decoder = Base64.getUrlDecoder();
+		byte[] decoded = decoder.decode(messageBody64);
+		String messageBodyS = new String(decoded);
+		int i = messageBodyS.indexOf("just uploaded a video");
+		return messageBodyS.substring(0, i-1);
 	}
   
 	//create list of video urls

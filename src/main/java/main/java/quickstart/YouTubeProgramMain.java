@@ -7,6 +7,8 @@ import java.util.List;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
+import com.google.api.services.gmail.Gmail;
+import com.google.api.services.gmail.model.Message;
 import com.google.api.services.youtube.YouTube;
 import com.google.common.collect.Lists;
 
@@ -16,12 +18,12 @@ public class YouTubeProgramMain {
 
     public static void main(String... args) throws IOException, GeneralSecurityException {
         
-    	//GmailMethods gmailMethods = new GmailMethods();
+    	GmailMethods gmailMethods = new GmailMethods();
     	
-    	//Credential credential = AuthGmail.authorize();
+    	Credential credential = AuthGmail.authorize();
     	
     	// Build a new authorized API client service.
-    	/*
+    	
     	Gmail service = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
             .setApplicationName("YouTube Playlist Creator")
             .build();
@@ -32,7 +34,9 @@ public class YouTubeProgramMain {
         for(Message x : gmailMethods.getEmailMessageList()) {
         	Message m = gmailMethods.getMessage(service, "me", x.getId());
         	System.out.println(gmailMethods.getVideoUrl(m));
-        */
+        	System.out.println(gmailMethods.getVideoUploader(m));
+        }
+        
         
         /*
          *
@@ -53,6 +57,7 @@ public class YouTubeProgramMain {
         list.add(VIDEO_ID2);
         list.add(VIDEO_ID3);
 
+        /*
         try {
             // Authorize the request.
             Credential credential = AuthYouTube.authorize(scopes, "playlistupdates");
@@ -81,6 +86,7 @@ public class YouTubeProgramMain {
             System.err.println("Throwable: " + t.getMessage());
             t.printStackTrace();
         }
+        */
         
     }
 
