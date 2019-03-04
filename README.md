@@ -9,5 +9,5 @@ It's still a work in progress. If you want to try it or contribute to it, read [
 
 ###### Technologies used.
 
-+ Java 11. At the time of this writing, the most-recent version of Java. Most of the 
++ Java 11. At the time of this writing, the most-recent version of Java.
 + Gradle. For importing some of Google's APIs.
