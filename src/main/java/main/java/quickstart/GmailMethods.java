@@ -45,43 +45,42 @@ public class GmailMethods {
     }
     
     //return a message given its ID
-    public Message getMessage(Gmail service, String userId, String messageId)
-	  	      throws IOException {
+    public Message getMessage(Gmail service, String userId, String messageId) throws IOException {
     	Message message = service.users().messages().get(userId, messageId).execute();
 	
 	  	//System.out.println("Message snippet: " + message.getSnippet());
 	
 	  	return message;
     }
-  
-    //return the video url of a YouTube email message
-	public String getVideoUrl(Message m) {
-		//message as a base 64 string
-		String messageBody64 = m.getPayload().getParts().get(0).get("body").toString();
+    
+    //
+    public String messageBodyToString(Message m) {
+    	//message as a base 64 string
+    	String messageBody64 = m.getPayload().getParts().get(0).get("body").toString();
 		messageBody64 = messageBody64.substring(9, messageBody64.indexOf("\"", 10));
 		Base64.Decoder decoder = Base64.getUrlDecoder();
 		byte[] decoded = decoder.decode(messageBody64);
 		String messageBodyS = new String(decoded);
-		int i = messageBodyS.indexOf("http://www.youtube.com/watch?");
-		return messageBodyS.substring(i, messageBodyS.indexOf("&", i));
+		return messageBodyS;
+    }
+  
+    //return the video url of a YouTube email message
+	public String getVideoUrl(String m) {
+		int i = m.indexOf("http://www.youtube.com/watch?");
+		return m.substring(i, m.indexOf("&", i));
 	}
 	
 	//return the uploader of a video
-	public String getVideoUploader(Message m) {
-		//message as a base 64 string
-		String messageBody64 = m.getPayload().getParts().get(0).get("body").toString();
-		messageBody64 = messageBody64.substring(9, messageBody64.indexOf("\"", 10));
-		Base64.Decoder decoder = Base64.getUrlDecoder();
-		byte[] decoded = decoder.decode(messageBody64);
-		String messageBodyS = new String(decoded);
-		int i = messageBodyS.indexOf("just uploaded a video");
-		return messageBodyS.substring(0, i-1);
+	public String getVideoUploader(String m) {
+			int i = m.indexOf("just uploaded a video");
+			return m.substring(0, i-1);
 	}
   
 	//create list of video urls
 	public void createVideoList() {
 		for(Message x : emailMessageList) {
-			videos.add(getVideoUrl(x));
+			messageBodyToString().getVideoUrl();
+			videos.add(getVideoUrl(messageBodyToString(x)));
 		}
 	}
 	

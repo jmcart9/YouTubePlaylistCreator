@@ -3,7 +3,12 @@ package main.java.quickstart;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -28,16 +33,33 @@ public class YouTubeProgramMain {
             .setApplicationName("YouTube Playlist Creator")
             .build();
         
-        String query = "The Infographics Show";
+    	Map<String,List<String>> uploadersAndVideos = new HashMap<String,List<String>>();
+    	Set<String> uploaders = new HashSet<String>();
+    	
+        String query = "from:noreply@youtube.com";
         gmailMethods.setEmailMessageList(service, "me", query);
         
         for(Message x : gmailMethods.getEmailMessageList()) {
         	Message m = gmailMethods.getMessage(service, "me", x.getId());
-        	System.out.println(gmailMethods.getVideoUrl(m));
-        	System.out.println(gmailMethods.getVideoUploader(m));
+ 
+            String uploader = gmailMethods.getVideoUploader(m);
+            String videoURL = gmailMethods.getVideoUrl(m);
+            
+            if(!uploadersAndVideos.containsKey(uploader)) {
+            	List<String> videoIDs = new LinkedList<String>();
+            	videoIDs.add(videoURL);
+            	uploadersAndVideos.put(uploader, videoIDs);
+            }
+            else {
+            	uploadersAndVideos.get(uploader).add(videoURL);
+            }
+        	
+        	//System.out.println(gmailMethods.getVideoUrl(m));
+        	//System.out.println(gmailMethods.getVideoUploader(m));
         }
         
-        
+        System.out.println(uploadersAndVideos.keySet());      
+              
         /*
          *
          * */
