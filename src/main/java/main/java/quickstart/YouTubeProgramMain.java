@@ -2,13 +2,17 @@ package main.java.quickstart;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -22,7 +26,7 @@ import com.google.common.collect.Lists;
 public class YouTubeProgramMain {
 
     public static void main(String... args) throws IOException, GeneralSecurityException {
-        
+    	
     	GmailMethods gmailMethods = new GmailMethods();
     	
     	Credential credential = AuthGmail.authorize();
@@ -36,29 +40,44 @@ public class YouTubeProgramMain {
     	Map<String,List<String>> uploadersAndVideos = new HashMap<String,List<String>>();
     	Set<String> uploaders = new HashSet<String>();
     	
-        String query = "from:noreply@youtube.com";
-        gmailMethods.setEmailMessageList(service, "me", query);
+    	//you use this to filter out invalid messages
+        //String query = "from:noreply@youtube.com in:music";
+    	String query = "from:noreply@youtube.com \"just uploaded a video\"";
+    	//String query = "from:noreply@youtube.com";
         
+    	int count = 0;
+        gmailMethods.setEmailMessageList(service, "me", query);
         for(Message x : gmailMethods.getEmailMessageList()) {
-        	//Message m = gmailMethods.getMessage(service, "me", x.getId());
- 
-            String uploader = gmailMethods.getVideoUploader(gmailMethods.messageBodyToString(x));
-            String videoURL = gmailMethods.getVideoUrl(gmailMethods.messageBodyToString(x));
+        	Message m = gmailMethods.getMessage(service, "me", x.getId());
+        	
+        	long date = m.getInternalDate();
+        	Date d = new Date(date);
+        	DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        	format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        	String formatted = format.format(date);
+        	
+            String uploader = gmailMethods.getVideoUploader(gmailMethods.messageBodyToString(m));
+            String videoURL = gmailMethods.getVideoUrl(gmailMethods.messageBodyToString(m));
             
             if(!uploadersAndVideos.containsKey(uploader)) {
             	List<String> videoIDs = new LinkedList<String>();
-            	videoIDs.add(videoURL);
+            	videoIDs.add(gmailMethods.getVideoID(videoURL));
             	uploadersAndVideos.put(uploader, videoIDs);
             }
             else {
-            	uploadersAndVideos.get(uploader).add(videoURL);
+            	uploadersAndVideos.get(uploader).add(gmailMethods.getVideoID(videoURL));
             }
         	
-        	//System.out.println(gmailMethods.getVideoUrl(m));
-        	//System.out.println(gmailMethods.getVideoUploader(m));
+            System.out.println(formatted);
+        	System.out.println(videoURL);
+        	System.out.println(uploader);
+        	System.out.println("---");
+        	count++;
+        	if (count > 100) break;
         }
         
-        System.out.println(uploadersAndVideos.keySet());      
+        System.out.println(uploadersAndVideos.keySet());
+        System.out.println(uploadersAndVideos.get("Sheet Music Boss").toString());  
               
         /*
          *

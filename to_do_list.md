@@ -12,7 +12,7 @@ Stuff that needs to be done so that the app will do what it's supposed to do.
     5. Adding video URLs to list. (done!)
     6. Creating playlists. (done!)
     7. Adding videos to playlists.
-    8. Creating playlists by different categories, eg date and author.
+    8. Creating playlists by different categories, eg date and author. Filter by date and author.
     9. Confirming that videos are in playlist.
     10. Deleting videos or sending them to trash.
 

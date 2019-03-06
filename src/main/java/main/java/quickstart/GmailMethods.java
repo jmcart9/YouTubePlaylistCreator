@@ -46,7 +46,6 @@ public class GmailMethods {
     //return a message given its ID
     public Message getMessage(Gmail service, String userId, String messageId) throws IOException {
     	Message message = service.users().messages().get(userId, messageId).execute();
-	
 	  	//System.out.println("Message snippet: " + message.getSnippet());
 	
 	  	return message;
@@ -63,15 +62,26 @@ public class GmailMethods {
     }
   
     //return the video url of a YouTube email message
+    //there should be a better way to write this.
 	public String getVideoUrl(String m) {
-		int i = m.indexOf("http://www.youtube.com/watch?");
-		return m.substring(i, m.indexOf("&", i));
+		if(m.contains("http://www.youtube.com/watch?")) {
+			int i = m.indexOf("http://www.youtube.com/watch?");
+			return m.substring(i, m.indexOf("&", i));
+		}
+		else return ":";
+		
 	}
 	
 	//return the uploader of a video
+	//there should be a better way to write this
 	public String getVideoUploader(String m) {
+			//if(m.contains("just uploaded a video")) {
 			int i = m.indexOf("just uploaded a video");
 			return m.substring(0, i-1);
+			//}
+			//channel names cannot have non-alphanumric characters, so...
+			//else return ":";
+			
 	}
   
 	//create list of video urls
