@@ -40,10 +40,10 @@ public class YouTubeProgramMain {
         gmailMethods.setEmailMessageList(service, "me", query);
         
         for(Message x : gmailMethods.getEmailMessageList()) {
-        	Message m = gmailMethods.getMessage(service, "me", x.getId());
+        	//Message m = gmailMethods.getMessage(service, "me", x.getId());
  
-            String uploader = gmailMethods.getVideoUploader(m);
-            String videoURL = gmailMethods.getVideoUrl(m);
+            String uploader = gmailMethods.getVideoUploader(gmailMethods.messageBodyToString(x));
+            String videoURL = gmailMethods.getVideoUrl(gmailMethods.messageBodyToString(x));
             
             if(!uploadersAndVideos.containsKey(uploader)) {
             	List<String> videoIDs = new LinkedList<String>();

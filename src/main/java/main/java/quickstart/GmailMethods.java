@@ -14,14 +14,13 @@ import com.google.api.services.gmail.model.Message;
 public class GmailMethods {
     
 	//list of video urls
-    private List<String> videos;
+    private List<String> videoUrls;
     
     //list of emails
-    private List<Message> emailMessageList;
+    private List<Message> listOfEmailMessages;
 	
     //fill a list of email messages from the user's inbox matching the query
-    public void setEmailMessageList(Gmail service, String userId,
-    		String query) throws IOException {
+    public void setEmailMessageList(Gmail service, String userId, String query) throws IOException {
     	ListMessagesResponse response = service.users().messages().list(userId).setQ(query).execute();
 
   	    List<Message> messages = new ArrayList<Message>();
@@ -36,12 +35,12 @@ public class GmailMethods {
   	    	}
   	    }
   	    
-  	    this.emailMessageList = messages;
+  	    this.listOfEmailMessages = messages;
   	  }
   
     //getter for list of emails
     public List<Message> getEmailMessageList() {
-    	return this.emailMessageList;
+    	return this.listOfEmailMessages;
     }
     
     //return a message given its ID
@@ -53,9 +52,8 @@ public class GmailMethods {
 	  	return message;
     }
     
-    //
+    //messages are encoded as base64 strings, so they need to be made less ugly
     public String messageBodyToString(Message m) {
-    	//message as a base 64 string
     	String messageBody64 = m.getPayload().getParts().get(0).get("body").toString();
 		messageBody64 = messageBody64.substring(9, messageBody64.indexOf("\"", 10));
 		Base64.Decoder decoder = Base64.getUrlDecoder();
@@ -78,15 +76,14 @@ public class GmailMethods {
   
 	//create list of video urls
 	public void createVideoList() {
-		for(Message x : emailMessageList) {
-			messageBodyToString().getVideoUrl();
-			videos.add(getVideoUrl(messageBodyToString(x)));
+		for(Message x : listOfEmailMessages) {
+			videoUrls.add(getVideoUrl(messageBodyToString(x)));
 		}
 	}
 	
 	//return list of video urls
 	public List<String> getVideoUrls(){
-		return videos;
+		return videoUrls;
 	}
 	
 	//Robust method for extracting video id from URL.
