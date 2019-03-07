@@ -5,6 +5,7 @@ import java.security.GeneralSecurityException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,15 +37,17 @@ public class YouTubeProgramMain {
     	Gmail service = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
             .setApplicationName("YouTube Playlist Creator")
             .build();
+    	
+    	//you use this to filter out invalid messages
+    	String query = "from:noreply@youtube.com \"just uploaded a video\"";
+    	
+        //String query = "from:noreply@youtube.com in:music";
+    	//String query = "from:noreply@youtube.com";
+    	//String query = "from:noreply@youtube.com \"Emory University\" OR \"Big Think\"";
         
     	Map<String,List<String>> uploadersAndVideos = new HashMap<String,List<String>>();
     	Set<String> uploaders = new HashSet<String>();
     	
-    	//you use this to filter out invalid messages
-        //String query = "from:noreply@youtube.com in:music";
-    	String query = "from:noreply@youtube.com \"just uploaded a video\"";
-    	//String query = "from:noreply@youtube.com";
-        
     	int count = 0;
         gmailMethods.setEmailMessageList(service, "me", query);
         for(Message x : gmailMethods.getEmailMessageList()) {
@@ -68,16 +71,28 @@ public class YouTubeProgramMain {
             	uploadersAndVideos.get(uploader).add(gmailMethods.getVideoID(videoURL));
             }
         	
+            
             System.out.println(formatted);
         	System.out.println(videoURL);
         	System.out.println(uploader);
         	System.out.println("---");
+        	
+        	//to make testing faster testing
         	count++;
-        	if (count > 100) break;
+        	if (count > 10) break;
         }
         
+        uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));
+        
+        /*
         System.out.println(uploadersAndVideos.keySet());
-        System.out.println(uploadersAndVideos.get("Sheet Music Boss").toString());  
+        System.out.println(uploadersAndVideos.get("Emory University"));
+        System.out.println(uploadersAndVideos.get("Big Think"));
+       
+        System.out.println(uploadersAndVideos.get("Emory University"));
+        System.out.println(uploadersAndVideos.get("Big Think"));
+        */
+        //System.out.println(uploadersAndVideos.get("Sheet Music Boss").toString());  
               
         /*
          *
