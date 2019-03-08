@@ -113,13 +113,13 @@ public class YouTubeProgramMain {
         list.add(VIDEO_ID2);
         list.add(VIDEO_ID3);
 
-        /*
+        
         try {
             // Authorize the request.
-            Credential credential = AuthYouTube.authorize(scopes, "playlistupdates");
+            Credential credentialY = AuthYouTube.authorize(scopes, "playlistupdates");
 
             // This object is used to make YouTube Data API requests.
-            youtube = new YouTube.Builder(AuthYouTube.HTTP_TRANSPORT, AuthYouTube.JSON_FACTORY, credential)
+            youtube = new YouTube.Builder(AuthYouTube.HTTP_TRANSPORT, AuthYouTube.JSON_FACTORY, credentialY)
                     .setApplicationName("youtube-cmdline-playlistupdates-sample")
                     .build();
 
@@ -142,7 +142,7 @@ public class YouTubeProgramMain {
             System.err.println("Throwable: " + t.getMessage());
             t.printStackTrace();
         }
-        */
+        
         
     }
 
