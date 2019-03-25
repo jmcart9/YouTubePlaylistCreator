@@ -19,7 +19,7 @@ public class GmailMethods {
     //list of emails
     private List<Message> listOfEmailMessages;
 	
-    //fill a list of email messages from the user's inbox matching the query
+    //fill a list containing email messages from the user's inbox which match the query
     public void setEmailMessageList(Gmail service, String userId, String query) throws IOException {
     	ListMessagesResponse response = service.users().messages().list(userId).setQ(query).execute();
 
