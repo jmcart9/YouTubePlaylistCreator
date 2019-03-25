@@ -25,11 +25,11 @@ import com.google.api.services.gmail.GmailScopes;
 public class AuthGmail {
 
 	private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-	static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+	public static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static final List<String> SCOPES = Collections.singletonList(GmailScopes.MAIL_GOOGLE_COM);
 	private static final String TOKENS_DIRECTORY_PATH = "tokens";
 	
-	static HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+	public static HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	
 	
     /**
@@ -37,21 +37,27 @@ public class AuthGmail {
      * @throws GeneralSecurityException 
      *
      */
-    public static Credential authorize() throws IOException, GeneralSecurityException {
+    public static Credential authorize() {
 
-    	//final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-    	
-    	// Load client secrets.
-        InputStream in = YouTubeProgramMain.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+    	try {
+    		//final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        	
+        	// Load client secrets.
+            InputStream in = YouTubeProgramMain.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+            GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
-        // Build flow and trigger user authorization request.
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
-                .setAccessType("offline")
-                .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+            // Build flow and trigger user authorization request.
+            GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                    HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+                    .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                    .setAccessType("offline")
+                    .build();
+            LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+            return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+    	}
+    	catch(IOException e) {
+    		System.out.println("credentials or json factory not found");
+    		return null;
+    	}
     }
 }
