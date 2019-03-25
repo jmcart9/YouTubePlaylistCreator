@@ -20,6 +20,8 @@ Stuff that needs to be done so that the app will do what it's supposed to do.
     1. Deleting old token when user or gmail scope changes.
     2. A better entry point.
     3. One (overloaded?) method for authenticating both Gmail and YouTube HTTP requests.
+    4. Logging.
+    5. Test classes.
 
 ## Fix errors
 
