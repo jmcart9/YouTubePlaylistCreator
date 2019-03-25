@@ -1,13 +1,23 @@
 package test;
 
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
+import com.google.api.services.gmail.Gmail;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
+import main.java.quickstart.AuthGmail;
 import main.java.quickstart.GmailMethods;
 
 public class TestGmailMethods {
 	
 	GmailMethods gmailMethods = new GmailMethods();
+	Gmail service = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
+            .setApplicationName("YouTube Playlist Creator")
+            .build();
 
 	@Test
 	public void testGetVideoID() {
@@ -23,5 +33,21 @@ public class TestGmailMethods {
 		assertEquals("dm66kyU5vWA", gmailMethods.getVideoID(url4));
 		assertEquals("EOBqpDcfVW0", gmailMethods.getVideoID(url5));
 	}
+	
+	@Test
+	public void testGmailService() {
+		assertNotEquals(service, null);
+		service.
+	}
+	
+	@Test
+	public void TestGetEmailMessageList() {
+		assertTrue(gmailMethods.getEmailMessageList().isEmpty());
+		gmailMethods.setEmailMessageList();
+		assertFalse(gmailMethods.getEmailMessageList().isEmpty());
+		
+	}
 
+
+	
 }
