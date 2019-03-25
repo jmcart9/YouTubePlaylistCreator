@@ -51,6 +51,7 @@ public class YouTubeProgramMain {
     	int count = 0;
         gmailMethods.setEmailMessageList(service, "me", query);
         for(Message x : gmailMethods.getEmailMessageList()) {
+        	
         	Message m = gmailMethods.getMessage(service, "me", x.getId());
         	
         	long date = m.getInternalDate();
@@ -113,6 +114,11 @@ public class YouTubeProgramMain {
         list.add(VIDEO_ID2);
         list.add(VIDEO_ID3);
 
+        //list of playlists from user's account
+        List<Integer> playlists;
+        
+        //map of playlist ids and titles
+        Map<String, String> titlesAndIDs = new HashMap<String, String>();
         
         try {
             // Authorize the request.
