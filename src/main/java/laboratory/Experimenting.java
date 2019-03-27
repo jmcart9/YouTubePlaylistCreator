@@ -1,4 +1,4 @@
-package test;
+package laboratory;
 
 public class Experimenting extends Experimenting2 implements ExperimentingInterface<Integer>{
 
@@ -13,7 +13,7 @@ public class Experimenting extends Experimenting2 implements ExperimentingInterf
 		
 		
 		
-		System.out.println();
+		System.out.println("l");
 	}
 
 	
