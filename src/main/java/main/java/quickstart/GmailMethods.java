@@ -20,22 +20,27 @@ public class GmailMethods {
     private List<Message> listOfEmailMessages;
 	
     //fill a list containing email messages from the user's inbox which match the query
-    public void setEmailMessageList(Gmail service, String userId, String query) throws IOException {
-    	ListMessagesResponse response = service.users().messages().list(userId).setQ(query).execute();
-
-  	    List<Message> messages = new ArrayList<Message>();
-  	    while (response.getMessages() != null) {
-  	    	messages.addAll(response.getMessages());
-  	    	if (response.getNextPageToken() != null) {
-  	    		String pageToken = response.getNextPageToken();
-  	    		response = service.users().messages().list(userId).setQ(query).setPageToken(pageToken).execute();
-  	    	} 
-  	    	else {
-  	    		break;
-  	    	}
-  	    }
-  	    
-  	    this.listOfEmailMessages = messages;
+    public void setEmailMessageList(Gmail service, String userId, String query) {
+    	List<Message> messages = new ArrayList<Message>();
+    	
+    	try {
+    		ListMessagesResponse response = service.users().messages().list(userId).setQ(query).execute();
+    		
+      	    while (response.getMessages() != null) {
+      	    	messages.addAll(response.getMessages());
+      	    	if (response.getNextPageToken() != null) {
+      	    		String pageToken = response.getNextPageToken();
+      	    		response = service.users().messages().list(userId).setQ(query).setPageToken(pageToken).execute();
+      	    	} 
+      	    	else {
+      	    		break;
+      	    	}
+      	    }
+      	  this.listOfEmailMessages = messages;
+    	}
+    	catch(IOException e){
+    		System.out.println("unable to get messages!");
+    	}	    
   	  }
   
     //getter for list of emails
