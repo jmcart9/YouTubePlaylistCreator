@@ -49,8 +49,8 @@ public class GmailMethods {
     }
     
     //return a message given its ID
-    public Message getMessage(Gmail service, String userId, String messageId) throws IOException {
-    	Message message = service.users().messages().get(userId, messageId).execute();
+    public Message getMessage(Gmail service, String userID, String messageID) throws IOException {
+    	Message message = service.users().messages().get(userID, messageID).execute();
 	  	//System.out.println("Message snippet: " + message.getSnippet());
 	
 	  	return message;
