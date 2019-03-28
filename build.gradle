@@ -16,5 +16,7 @@ dependencies {
     compile 'com.google.apis:google-api-services-gmail:v1-rev83-1.23.0'
     compile 'com.google.apis:google-api-services-youtube:v3-rev206-1.25.0'
     compile 'org.openjfx:javafx-base:12'
-    testCompile 'junit:junit:4.12'
+    
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
 }
