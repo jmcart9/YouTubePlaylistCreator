@@ -1,6 +1,7 @@
 package test;
 
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 
 import com.google.api.services.gmail.Gmail;
 
@@ -8,7 +9,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.BeforeClass;
 
@@ -17,14 +22,16 @@ import main.java.quickstart.GmailMethods;
 
 public class TestGmailMethods {
 	
-	GmailMethods gmailMethods;
-	Gmail service;
+	static GmailMethods gmailMethods;
+	static Gmail service;
+	String query = "from:noreply@youtube.com \"just uploaded a video\"";;
+	String userID = "thisistheforestprimeval@gmail.com";
+	String messageID;
 	
-	@SuppressWarnings("unused")
 	@BeforeClass
 	public static void setUp() {
-		GmailMethods gmailMethods = new GmailMethods();
-		Gmail service = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
+		gmailMethods = new GmailMethods();
+		service = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
 	            .setApplicationName("YouTube Playlist Creator")
 	            .build();
 	}
@@ -53,18 +60,36 @@ public class TestGmailMethods {
 	}
 	
 	@Test
-	public void TestSetEmailMessageList() {
-		String query = "from:noreply@youtube.com \"just uploaded a video\"";
-		assertTrue(gmailMethods.getEmailMessageList().isEmpty());
-		gmailMethods.setEmailMessageList(service, "me", query);
-		assertFalse(gmailMethods.getEmailMessageList().isEmpty());
-		System.out.println("EmailMessageList set?: " + gmailMethods.getEmailMessageList().isEmpty());
+	public void testSetEmailMessageList() {
+		
+		try {
+			gmailMethods.getEmailMessageList().isEmpty();
+		}
+		catch(NullPointerException e){
+			assertTrue(true);
+			System.out.println("as expected, list is empty");
+		}
+		gmailMethods.setEmailMessageList(service, userID, query);
+		System.out.println(gmailMethods.);
+		//assertFalse(gmailMethods.getEmailMessageList().isEmpty());
+		System.out.println("EmailMessageList set?: " + !gmailMethods.getEmailMessageList().isEmpty());
 	}
 	
 	@Test
-	public void TestGetEmailMessageList() {
+	public void testGetEmailMessageList() {
 		assertFalse(gmailMethods.getEmailMessageList().isEmpty());
 		System.out.println("EmailMessageList: " + gmailMethods.getEmailMessageList().toString());
+	}
+	
+	@Test
+	public void testGetMessage() {
+		//gmailMethods.getMessage(service, userID, messageID);
+	}
+	
+	public static void main(String... args) {
+		//List list;
+		
+		//System.out.println(list);
 	}
 
 
