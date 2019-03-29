@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
 import main.java.quickstart.AuthGmail;
@@ -66,13 +67,13 @@ public class TestGmailMethods {
 			gmailMethods.getEmailMessageList().isEmpty();
 		}
 		catch(NullPointerException e){
-			assertTrue(true);
+			//Assert.fail();
 			System.out.println("as expected, list is empty");
 		}
 		gmailMethods.setEmailMessageList(service, userID, query);
-		System.out.println(gmailMethods.);
-		//assertFalse(gmailMethods.getEmailMessageList().isEmpty());
-		System.out.println("EmailMessageList set?: " + !gmailMethods.getEmailMessageList().isEmpty());
+		//System.out.println(gmailMethods.);
+		assertFalse(gmailMethods.getEmailMessageList().isEmpty());
+		System.out.println("EmailMessageList empty?: " + gmailMethods.getEmailMessageList().isEmpty());
 	}
 	
 	@Test
@@ -87,9 +88,9 @@ public class TestGmailMethods {
 	}
 	
 	public static void main(String... args) {
-		//List list;
+		setUp();
+		testSetEmailMessageList();
 		
-		//System.out.println(list);
 	}
 
 
