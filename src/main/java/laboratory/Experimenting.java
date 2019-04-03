@@ -11,9 +11,9 @@ public class Experimenting extends Experimenting2 implements ExperimentingInterf
 	
 	public static void main(String args[]) {
 		
+		var $ = "kh";
 		
-		
-		System.out.println("l");
+		System.out.println($);
 	}
 
 	
