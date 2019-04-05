@@ -49,11 +49,13 @@ public class GmailMethods {
     }
     
     //return a message given its ID
-    public Message getMessage(Gmail service, String userID, String messageID) throws IOException {
-    	Message message = service.users().messages().get(userID, messageID).execute();
-	  	//System.out.println("Message snippet: " + message.getSnippet());
-	
-	  	return message;
+    public Message getMessage(Gmail service, String userID, String messageID) {
+    	try {
+    		return service.users().messages().get(userID, messageID).execute();
+    	}
+    	catch(IOException e){
+    		return null;
+    	}
     }
     
     //messages are encoded as base64 strings, so they need to be made less ugly
