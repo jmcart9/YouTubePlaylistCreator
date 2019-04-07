@@ -19,3 +19,4 @@ tokens/StoredCredential
 .classpath
 .classpath/
 .settings/
+.settings
