@@ -60,12 +60,12 @@ public class GmailMethods {
     
     //messages are encoded as base64 strings, so they need to be made less ugly
     public String messageBodyToString(Message m) {
-    	String messageBody64 = m.getPayload().getParts().get(0).get("body").toString();
-		messageBody64 = messageBody64.substring(9, messageBody64.indexOf("\"", 10));
+    	
+    	String messageBody64 = m.getPayload().getParts().get(0).getBody().getData();
 		Base64.Decoder decoder = Base64.getUrlDecoder();
 		byte[] decoded = decoder.decode(messageBody64);
-		String messageBodyS = new String(decoded);
-		return messageBodyS;
+		return new String(decoded);
+		
     }
   
     //return the video url of a YouTube email message
