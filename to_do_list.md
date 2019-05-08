@@ -29,6 +29,8 @@ Check [errors](https://github.com/jmcart9/YouTubeProgram/blob/master/errors.md) 
 
 ## Other stuff
 
+* Add non-English support
+
 * Set up database. Database should contain user credentials with user id as the primary key. Needs to be encrypted.
 
 * Create GUI.
