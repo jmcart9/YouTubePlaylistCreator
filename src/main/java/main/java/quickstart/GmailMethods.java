@@ -13,19 +13,28 @@ import com.google.api.services.gmail.model.Message;
 
 public class GmailMethods {
     
+	
+	
 	//list of video urls
     private List<String> videoUrls;
     
     //list of emails
     private List<Message> listOfEmailMessages;
 	
+    Gmail service;
+    String userID = "me";
+    
+    public GmailMethods(Gmail service){
+    	this.service = service;
+    	this.listOfEmailMessages = new ArrayList<Message>();
+    }
+    
     //fill a list containing email messages from the user's inbox which match the query
     public void setEmailMessageList(Gmail service, String userId, String query) {
     	List<Message> messages = new ArrayList<Message>();
-    	
     	try {
+    		//for some reason, the messages returned below contain only the message id and thread id, not the payload or anything else
     		ListMessagesResponse response = service.users().messages().list(userId).setQ(query).execute();
-    		
       	    while (response.getMessages() != null) {
       	    	messages.addAll(response.getMessages());
       	    	if (response.getNextPageToken() != null) {
@@ -36,7 +45,9 @@ public class GmailMethods {
       	    		break;
       	    	}
       	    }
-      	  this.listOfEmailMessages = messages;
+      	    //get the whole message, not just the IDs
+      	    messages.replaceAll(x -> getMessage(x.getId())); 	    
+      	    listOfEmailMessages.addAll(messages);
     	}
     	catch(IOException e){
     		System.out.println("unable to get messages!");
@@ -49,7 +60,7 @@ public class GmailMethods {
     }
     
     //return a message given its ID
-    public Message getMessage(Gmail service, String userID, String messageID) {
+    public Message getMessage(String messageID) {
     	try {
     		return service.users().messages().get(userID, messageID).execute();
     	}
@@ -60,7 +71,6 @@ public class GmailMethods {
     
     //messages are encoded as base64 strings, so they need to be made less ugly
     public String messageBodyToString(Message m) {
-    	
     	String messageBody64 = m.getPayload().getParts().get(0).getBody().getData();
 		Base64.Decoder decoder = Base64.getUrlDecoder();
 		byte[] decoded = decoder.decode(messageBody64);
@@ -69,7 +79,7 @@ public class GmailMethods {
     }
   
     //return the video url of a YouTube email message
-    //there should be a better way to write this.
+    //this should be done using the YouTube API, not the gmail API
 	public String getVideoUrl(String m) {
 		if(m.contains("http://www.youtube.com/watch?")) {
 			int i = m.indexOf("http://www.youtube.com/watch?");
@@ -81,6 +91,7 @@ public class GmailMethods {
 	
 	//return the uploader of a video
 	//there should be a better way to write this
+	//it needs to be universailized for different languages
 	public String getVideoUploader(String m) {
 			//if(m.contains("just uploaded a video")) {
 			int i = m.indexOf("just uploaded a video");
