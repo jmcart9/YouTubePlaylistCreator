@@ -28,8 +28,6 @@ public class YouTubeProgramMain {
 
     public static void main(String... args) throws IOException, GeneralSecurityException {
     	
-    	GmailMethods gmailMethods = new GmailMethods();
-    	
     	Credential credential = AuthGmail.authorize();
     	
     	// Build a new authorized API client service.
@@ -37,6 +35,8 @@ public class YouTubeProgramMain {
     	Gmail service = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
             .setApplicationName("YouTube Playlist Creator")
             .build();
+    	
+    	GmailMethods gmailMethods = new GmailMethods(service);
     	
     	//you use this to filter out invalid messages
     	String query = "from:noreply@youtube.com \"just uploaded a video\"";
@@ -52,7 +52,7 @@ public class YouTubeProgramMain {
         gmailMethods.setEmailMessageList(service, "me", query);
         for(Message x : gmailMethods.getEmailMessageList()) {
         	
-        	Message m = gmailMethods.getMessage(service, "me", x.getId());
+        	Message m = gmailMethods.getMessage(x.getId());
         	
         	long date = m.getInternalDate();
         	Date d = new Date(date);
