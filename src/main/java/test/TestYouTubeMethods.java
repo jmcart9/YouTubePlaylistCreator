@@ -1,5 +1,8 @@
 package test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -32,17 +35,24 @@ public class TestYouTubeMethods {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		youtubeMethods = new YouTubeMethods();
+		youtubeMethods = new YouTubeMethods(service);
 	}
 	
-	@Test
+	//@Test
 	public void testInsertPlaylist() {
 		try {
-			String x = youtubeMethods.insertPlaylist(service, "testy6 ");
+			String x = youtubeMethods.insertPlaylist("testy6 ");
 			System.out.println(x);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testGetVideoChannel() {
+		String channel = youtubeMethods.getVideoChannel("Ks-_Mh1QhMc");
+		assertNotNull(channel);
+		assertEquals("TED", channel);
 	}
 }

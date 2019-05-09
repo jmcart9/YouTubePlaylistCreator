@@ -14,6 +14,7 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 
 import com.google.api.services.youtube.YouTubeScopes;
 import com.google.api.services.youtube.model.*;
+import com.google.api.services.gmail.Gmail;
 import com.google.api.services.youtube.YouTube;
 
 import java.io.IOException;
@@ -25,10 +26,17 @@ import java.util.List;
 
 public class YouTubeMethods {
     
+	YouTube service;
+    String userID = "me";
+ 
+    public YouTubeMethods (YouTube service) {
+    	this.service = service;
+    }
+	
     /**
      * Create a playlist and add it to the authorized account.
      */
-    public static String insertPlaylist(YouTube youtube, String title) throws IOException {
+    public String insertPlaylist(String title) throws IOException {
 
         // This code constructs the playlist resource that is being inserted.
         // It defines the playlist's title, description, and privacy status.
@@ -46,7 +54,7 @@ public class YouTubeMethods {
         // argument identifies the resource parts that the API response should
         // contain, and the second argument is the playlist being inserted.
         YouTube.Playlists.Insert playlistInsertCommand =
-                youtube.playlists().insert("snippet,status", youTubePlaylist);
+        		service.playlists().insert("snippet,status", youTubePlaylist);
         Playlist playlistInserted = playlistInsertCommand.execute();
 
         // Print data from the API response and return the new playlist's
@@ -105,4 +113,17 @@ public class YouTubeMethods {
 
     }
 	
+    
+    public String getVideoChannel(String videoID) {
+    	try {
+			YouTube.Videos.List request = service.videos().list("snippet");
+			VideoListResponse response = request.setId(videoID).execute();
+			//video IDs should be unique, so the items list should contain only one object
+		    return response.getItems().get(0).getSnippet().getChannelTitle();
+		} 
+    	catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+    }
 }
