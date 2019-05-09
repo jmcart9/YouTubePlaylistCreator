@@ -13,8 +13,6 @@ import com.google.api.services.gmail.model.Message;
 
 public class GmailMethods {
     
-	
-	
 	//list of video urls
     private List<String> videoUrls;
     
@@ -115,7 +113,7 @@ public class GmailMethods {
 	}
 	
 	//Robust method for extracting video id from URL.
-	public String getVideoID(String url) {
+	public String getVideoIDFromUrl(String url) {
 		String pattern = "(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*";
 		Pattern compiledPattern = Pattern.compile(pattern);
         Matcher matcher = compiledPattern.matcher(url);

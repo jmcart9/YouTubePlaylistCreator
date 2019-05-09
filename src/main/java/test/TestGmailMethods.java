@@ -68,10 +68,6 @@ public class TestGmailMethods {
 		gmailMethods.setEmailMessageList(service, userID, query);
 		assertNotNull(gmailMethods.getEmailMessageList());
 		assertFalse(gmailMethods.getEmailMessageList().isEmpty());
-		
-		//System.out.println(gmailMethods.getEmailMessageList().get(2).toPrettyString() + "a");
-		//System.out.println(gmailMethods.getMessage("169c3b18a7d9dadb").toPrettyString() + "b");
-		
 	}
 	
 	//@Test
@@ -92,7 +88,6 @@ public class TestGmailMethods {
 		
 	}
 	
-	//@Test
 	//@Test
 	public void testMessageBodyToString() {
 		message = gmailMethods.getMessage(messageID);
@@ -129,18 +124,18 @@ public class TestGmailMethods {
 	}
 	
 	//@Test
-	public void testGetVideoID() {
+	public void testGetVideoIDFromUrl() {
 		String url1 = "https://www.youtube.com/watch?v=oBIQbja-BPY";
 		String url2 = "http://youtu.be/dQw4w9WgXcQ";
 		String url3 = "http://www.youtube.com/watch?feature=player_embedded&v=xxx";
 		String url4 = "https://www.youtube.com/watch?v=dm66kyU5vWA&feature=em-uploademail";
 		String url5 = "https://www.youtube.com/watch?v=EOBqpDcfVW0";
 		
-		assertEquals("oBIQbja-BPY", gmailMethods.getVideoID(url1));
-		assertEquals("dQw4w9WgXcQ", gmailMethods.getVideoID(url2));
-		assertEquals("xxx", gmailMethods.getVideoID(url3));
-		assertEquals("dm66kyU5vWA", gmailMethods.getVideoID(url4));
-		assertEquals("EOBqpDcfVW0", gmailMethods.getVideoID(url5));
+		assertEquals("oBIQbja-BPY", gmailMethods.getVideoIDFromUrl(url1));
+		assertEquals("dQw4w9WgXcQ", gmailMethods.getVideoIDFromUrl(url2));
+		assertEquals("xxx", gmailMethods.getVideoIDFromUrl(url3));
+		assertEquals("dm66kyU5vWA", gmailMethods.getVideoIDFromUrl(url4));
+		assertEquals("EOBqpDcfVW0", gmailMethods.getVideoIDFromUrl(url5));
 	}
 	
 	public static void main(String... args) {
