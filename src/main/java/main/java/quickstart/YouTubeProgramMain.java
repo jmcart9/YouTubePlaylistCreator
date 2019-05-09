@@ -65,11 +65,11 @@ public class YouTubeProgramMain {
             
             if(!uploadersAndVideos.containsKey(uploader)) {
             	List<String> videoIDs = new LinkedList<String>();
-            	videoIDs.add(gmailMethods.getVideoID(videoURL));
+            	videoIDs.add(gmailMethods.getVideoIDFromUrl(videoURL));
             	uploadersAndVideos.put(uploader, videoIDs);
             }
             else {
-            	uploadersAndVideos.get(uploader).add(gmailMethods.getVideoID(videoURL));
+            	uploadersAndVideos.get(uploader).add(gmailMethods.getVideoIDFromUrl(videoURL));
             }
         	
             
@@ -98,8 +98,6 @@ public class YouTubeProgramMain {
         /*
          *
          * */
-         
-        YouTubeMethods youtubeMethods = new YouTubeMethods();
         
         // This OAuth 2.0 access scope allows for full read/write access to the
         // authenticated user's account.
@@ -129,9 +127,11 @@ public class YouTubeProgramMain {
             youtube = new YouTube.Builder(AuthYouTube.HTTP_TRANSPORT, AuthYouTube.JSON_FACTORY, credentialY)
                     .setApplicationName("youtube-cmdline-playlistupdates-sample")
                     .build();
+            
+            YouTubeMethods youtubeMethods = new YouTubeMethods(youtube);
 
             // Create a new, private playlist in the authorized user's channel.
-            String playlistId = YouTubeMethods.insertPlaylist(youtube, "testing playlist woo!");
+            String playlistId = youtubeMethods.insertPlaylist("testing playlist woo!");
 
             // If a valid playlist was created, add a video to that playlist.
             //YouTubeMethods.insertPlaylistItem(playlistId, VIDEO_ID, youtube);
