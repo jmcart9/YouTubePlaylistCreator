@@ -13,6 +13,7 @@ src/main/resources/client_secrets.json
 
 # User tokens
 tokens/StoredCredential
+tokens/StoredCredentialYoutube
 
 # Development idiosyncratic things
 .project
