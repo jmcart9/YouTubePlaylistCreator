@@ -106,6 +106,7 @@ public class YouTubeProgramMain {
         
         List<String> scopes = Lists.newArrayList("https://www.googleapis.com/auth/youtube");
     	YouTube youtube;
+    	
         String VIDEO_ID1 = "WM8bTdBs-cw";
         String VIDEO_ID2 = "PrDzd4ufypE";
         String VIDEO_ID3 = "fI1UKP6u4mo";
