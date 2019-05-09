@@ -36,10 +36,10 @@ public class AuthYouTube {
     public static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
     /**
-     * This is the directory that will be used under the user's home directory where OAuth tokens will be stored.
+     * This is the directory that will be used where OAuth tokens will be stored.
      */
-    private static final String CREDENTIALS_DIRECTORY = ".oauth-credentials";
-
+    private static final String TOKENS_DIRECTORY_PATH = "tokens";
+    
     /**
      * Authorizes the installed application to access user's protected data.
      *
@@ -61,8 +61,8 @@ public class AuthYouTube {
             System.exit(1);
         }
 
-        // This creates the credentials datastore at ~/.oauth-credentials/${credentialDatastore}
-        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(new File(System.getProperty("user.home") + "/" + CREDENTIALS_DIRECTORY));
+        // This creates the credentials datastore at TOKENS_DIRECTORY_PATH
+        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH));
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
