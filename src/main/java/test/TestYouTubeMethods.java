@@ -11,12 +11,12 @@ import org.junit.Test;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.Playlist;
+import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.common.collect.Lists;
 
 import main.java.quickstart.AuthYouTube;
 import main.java.quickstart.YouTubeMethods;
-
-
 
 public class TestYouTubeMethods {
 	
@@ -39,17 +39,30 @@ public class TestYouTubeMethods {
 	}
 	
 	//@Test
-	public void testInsertPlaylist() {
-		try {
-			String x = youtubeMethods.insertPlaylist("testy6 ");
-			System.out.println(x);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void testCreatePlaylist() {
+		String playlistTitle = "the test playlist";
+		String privacy = "private";
+		
+		Playlist x = youtubeMethods.createPlaylist(playlistTitle);
+		assertEquals(x.getSnippet().getTitle(), playlistTitle);
+		assertEquals(x.getStatus().getPrivacyStatus(), privacy);
+		assertEquals(x.getSnippet().getDescription(), "playlist for " + playlistTitle);
+		System.out.println("playlist ID: " + x.getId());
 	}
 	
-	@Test
+	//@Test
+	public void testInsertPlaylistItem() {
+		String videoId = "Ks-_Mh1QhMc";
+		String title = "Your body language may shape who you are | Amy Cuddy";
+		String playlistId = "PLwMubaXkpmaS7M8CryPgt8XkFa2_basIN";
+		
+		PlaylistItem x = youtubeMethods.insertPlaylistItem(playlistId, videoId, service, title);
+		
+		assertEquals(x.getSnippet().getTitle(), title);
+		assertEquals(x.getSnippet().getResourceId().getVideoId(), videoId);
+	}
+	
+	//@Test
 	public void testGetVideoChannel() {
 		String channel = youtubeMethods.getVideoChannel("Ks-_Mh1QhMc");
 		assertNotNull(channel);
