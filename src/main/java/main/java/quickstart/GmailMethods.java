@@ -86,19 +86,6 @@ public class GmailMethods {
 		else return ":";
 		
 	}
-	
-	//return the uploader of a video
-	//there should be a better way to write this
-	//it needs to be universailized for different languages
-	public String getVideoUploader(String m) {
-			//if(m.contains("just uploaded a video")) {
-			int i = m.indexOf("just uploaded a video");
-			return m.substring(0, i-1);
-			//}
-			//channel names cannot have non-alphanumric characters, so...
-			//else return ":";
-			
-	}
   
 	//create list of video urls
 	public void createVideoList() {
