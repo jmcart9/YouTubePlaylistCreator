@@ -60,6 +60,7 @@ public class YouTubeProgramMain {
         	format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
         	String formatted = format.format(date);
         	
+        	/*
             String uploader = gmailMethods.getVideoUploader(gmailMethods.messageBodyToString(m));
             String videoURL = gmailMethods.getVideoUrl(gmailMethods.messageBodyToString(m));
             
@@ -77,6 +78,8 @@ public class YouTubeProgramMain {
         	System.out.println(videoURL);
         	System.out.println(uploader);
         	System.out.println("---");
+        	
+        	*/
         	
         	//to make testing faster testing
         	count++;
@@ -131,12 +134,12 @@ public class YouTubeProgramMain {
             YouTubeMethods youtubeMethods = new YouTubeMethods(youtube);
 
             // Create a new, private playlist in the authorized user's channel.
-            String playlistId = youtubeMethods.insertPlaylist("testing playlist woo!");
+            String playlistId = youtubeMethods.createPlaylist("testing playlist woo!").getId();
 
             // If a valid playlist was created, add a video to that playlist.
             //YouTubeMethods.insertPlaylistItem(playlistId, VIDEO_ID, youtube);
             for(String s : list) {
-            	YouTubeMethods.insertPlaylistItem(playlistId, s, youtube);
+            	//YouTubeMethods.insertPlaylistItem(playlistId, s, youtube);
             }
 
         } catch (GoogleJsonResponseException e) {
