@@ -41,7 +41,7 @@ public class TestGmailMethods {
 		assertNotEquals(service, null);
 		assertEquals(service.getApplicationName(), "YouTube Playlist Creator");
 		assertNotNull(service.users());
-		System.out.println("service is okay, I think: " + service.toString());
+		System.out.println("gmail service is okay, I think: " + service.toString());
 	}
 	
 	//@Test
