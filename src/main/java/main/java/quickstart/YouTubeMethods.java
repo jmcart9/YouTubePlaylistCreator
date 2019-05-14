@@ -2,11 +2,13 @@ package main.java.quickstart;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.HashSet;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Playlist;
 import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.PlaylistItemSnippet;
+import com.google.api.services.youtube.model.PlaylistListResponse;
 import com.google.api.services.youtube.model.PlaylistSnippet;
 import com.google.api.services.youtube.model.PlaylistStatus;
 import com.google.api.services.youtube.model.ResourceId;
@@ -16,9 +18,52 @@ public class YouTubeMethods {
     
 	YouTube service;
     String userID = "me";
+    
+    public HashSet<String> extantPlaylists = new HashSet<String>();
  
-    public YouTubeMethods (YouTube service) {
+    public HashSet<String> getExtantPlaylists() {
+		return extantPlaylists;
+	}
+
+	public YouTubeMethods (YouTube service) {
     	this.service = service;
+    	
+    	long maxSize = 2L;
+    	
+		try {
+			YouTube.Playlists.List request = service.playlists().list("snippet");
+			PlaylistListResponse response = request.setMaxResults(maxSize).setMine(true).execute();
+			
+			long pages = 0;
+			
+			if(response.getPageInfo().getTotalResults() <= maxSize) {
+				pages++;
+			}
+			else if(response.getPageInfo().getTotalResults() % maxSize == 0) {
+				pages = response.getPageInfo().getTotalResults() / maxSize;
+			}
+			else {
+				pages = response.getPageInfo().getTotalResults() / maxSize;
+				pages++;
+			}
+			
+			
+			if(response.getPageInfo().getTotalResults() / maxSize;)
+			
+				//
+				
+			for (; pages > 0; pages--) {
+				for(Playlist p : response.getItems()) {
+					this.extantPlaylists.add(p.getSnippet().getTitle());
+		    	}
+				String nextPage = response.getNextPageToken();
+				response = request.setMaxResults(2L).setMine(true).setPageToken(nextPage).execute();
+				
+			}
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 	
     /**
@@ -26,6 +71,11 @@ public class YouTubeMethods {
      */
     public Playlist createPlaylist(String title) {
 
+    	if (extantPlaylists.contains(title)) {
+    		System.out.println("playlist already added");
+    		return null;
+    	}
+    	
         PlaylistSnippet playlistSnippet = new PlaylistSnippet();
         playlistSnippet.setTitle(title);
         playlistSnippet.setDescription("playlist for " + title);
@@ -42,6 +92,7 @@ public class YouTubeMethods {
         try {
 			playlistInsertCommand = service.playlists().insert("snippet,status", youTubePlaylist);
 			playlistInserted = playlistInsertCommand.execute();
+			extantPlaylists.add(title);
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
@@ -58,14 +109,14 @@ public class YouTubeMethods {
      * @param playlistId assign to newly created playlistitem
      * @param videoId    YouTube video id to add to playlistitem
      */
-    public PlaylistItem insertPlaylistItem(String playlistId, String videoId, YouTube youtube, String itemTitle) {
+    public PlaylistItem insertPlaylistItem(String playlistId, String videoId, String playlistTitle) {
 
         ResourceId resourceId = new ResourceId();
         resourceId.setKind("youtube#video");
         resourceId.setVideoId(videoId);
 
         PlaylistItemSnippet playlistItemSnippet = new PlaylistItemSnippet();
-        playlistItemSnippet.setTitle(itemTitle);
+        playlistItemSnippet.setTitle(playlistTitle);
         playlistItemSnippet.setPlaylistId(playlistId);
         playlistItemSnippet.setResourceId(resourceId);
 
@@ -75,7 +126,7 @@ public class YouTubeMethods {
         YouTube.PlaylistItems.Insert playlistItemsInsertCommand;
         PlaylistItem returnedPlaylistItem = null;
 		try {
-			playlistItemsInsertCommand = youtube.playlistItems().insert("snippet,contentDetails", playlistItem);
+			playlistItemsInsertCommand = service.playlistItems().insert("snippet,contentDetails", playlistItem);
 			returnedPlaylistItem = playlistItemsInsertCommand.execute();
 		} 
 		catch (IOException e) {
