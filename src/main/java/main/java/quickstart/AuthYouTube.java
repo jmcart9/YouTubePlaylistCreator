@@ -13,6 +13,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.common.collect.Lists;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,13 +41,17 @@ public class AuthYouTube {
      */
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
     
+    static List<String> scopes = Lists.newArrayList("https://www.googleapis.com/auth/youtube");
+    
+    static String credentialDatastore = "StoredCredentialYoutube";
+    
     /**
      * Authorizes the installed application to access user's protected data.
      *
      * @param scopes              list of scopes needed to run youtube upload.
      * @param credentialDatastore name of the credential datastore to cache OAuth tokens
      */
-    public static Credential authorize(List<String> scopes, String credentialDatastore) throws IOException {
+    public static Credential authorize() throws IOException {
 
         // Load client secrets.
         Reader clientSecretReader = new InputStreamReader(AuthYouTube.class.getResourceAsStream("/client_secrets.json"));
@@ -66,7 +71,8 @@ public class AuthYouTube {
         DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes).setCredentialDataStore(datastore)
+                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes)
+        		.setCredentialDataStore(datastore)
                 .build();
 
         // Build the local server and bind it to port 8080
