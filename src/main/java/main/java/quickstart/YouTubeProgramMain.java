@@ -28,37 +28,36 @@ public class YouTubeProgramMain {
 
     public static void main(String... args) throws IOException, GeneralSecurityException {
     	
-    	Credential credential = AuthGmail.authorize();
+    	Gmail gService = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
+    			.setApplicationName("YouTube Playlist Creator")
+    			.build();
+    	GmailMethods gmailMethods = new GmailMethods(gService);
     	
-    	// Build a new authorized API client service.
-    	
-    	Gmail service = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
-            .setApplicationName("YouTube Playlist Creator")
-            .build();
-    	
-    	GmailMethods gmailMethods = new GmailMethods(service);
+    	YouTube yService = new YouTube.Builder(AuthYouTube.HTTP_TRANSPORT, AuthYouTube.JSON_FACTORY, AuthYouTube.authorize())
+                .setApplicationName("YouTube Playlist Creator")
+                .build();
     	
     	//you use this to filter out invalid messages
-    	String query = "from:noreply@youtube.com \"just uploaded a video\"";
-    	
+    	//String query = "from:noreply@youtube.com \"just uploaded a video\"";
         //String query = "from:noreply@youtube.com in:music";
-    	//String query = "from:noreply@youtube.com";
     	//String query = "from:noreply@youtube.com \"Emory University\" OR \"Big Think\"";
+    	String query = "from:noreply@youtube.com";
         
     	Map<String,List<String>> uploadersAndVideos = new HashMap<String,List<String>>();
     	Set<String> uploaders = new HashSet<String>();
     	
-    	int count = 0;
-        gmailMethods.setEmailMessageList(service, "me", query);
+        gmailMethods.setEmailMessageList(gService, "me", query);
         for(Message x : gmailMethods.getEmailMessageList()) {
         	
         	Message m = gmailMethods.getMessage(x.getId());
         	
+        	/*
         	long date = m.getInternalDate();
         	Date d = new Date(date);
         	DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         	format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
         	String formatted = format.format(date);
+        	*/
         	
         	/*
             String uploader = gmailMethods.getVideoUploader(gmailMethods.messageBodyToString(m));
@@ -80,23 +79,9 @@ public class YouTubeProgramMain {
         	System.out.println("---");
         	
         	*/
-        	
-        	//to make testing faster testing
-        	count++;
-        	if (count > 10) break;
         }
         
-        uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));
-        
-        /*
-        System.out.println(uploadersAndVideos.keySet());
-        System.out.println(uploadersAndVideos.get("Emory University"));
-        System.out.println(uploadersAndVideos.get("Big Think"));
-       
-        System.out.println(uploadersAndVideos.get("Emory University"));
-        System.out.println(uploadersAndVideos.get("Big Think"));
-        */
-        //System.out.println(uploadersAndVideos.get("Sheet Music Boss").toString());  
+        uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));  
               
         /*
          *
@@ -124,7 +109,7 @@ public class YouTubeProgramMain {
         
         try {
             // Authorize the request.
-            Credential credentialY = AuthYouTube.authorize(scopes, "playlistupdates");
+            Credential credentialY = AuthYouTube.authorize();
 
             // This object is used to make YouTube Data API requests.
             youtube = new YouTube.Builder(AuthYouTube.HTTP_TRANSPORT, AuthYouTube.JSON_FACTORY, credentialY)
