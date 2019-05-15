@@ -45,7 +45,7 @@ public class TestYouTubeMethods {
 		System.out.println("service is okay, I think: " + service.toString());
 	}
 	
-	@Test
+	//@Test
 	public void testGetExtantPlaylists() {
 		assertNotNull(youtubeMethods.getExtantPlaylists());
 		youtubeMethods.getExtantPlaylists().stream().forEach(System.out::println);

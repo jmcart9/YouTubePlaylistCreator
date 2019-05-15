@@ -1,7 +1,6 @@
 package main.java.quickstart;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.HashSet;
 
 import com.google.api.services.youtube.YouTube;
@@ -28,29 +27,24 @@ public class YouTubeMethods {
 	public YouTubeMethods (YouTube service) {
     	this.service = service;
     	
-    	long maxSize = 2L;
+    	long maxResultSize = 50L;
     	
 		try {
 			YouTube.Playlists.List request = service.playlists().list("snippet");
-			PlaylistListResponse response = request.setMaxResults(maxSize).setMine(true).execute();
+			PlaylistListResponse response = request.setMaxResults(maxResultSize).setMine(true).execute();
 			
 			long pages = 0;
 			
-			if(response.getPageInfo().getTotalResults() <= maxSize) {
+			if(response.getPageInfo().getTotalResults() <= maxResultSize) {
 				pages++;
 			}
-			else if(response.getPageInfo().getTotalResults() % maxSize == 0) {
-				pages = response.getPageInfo().getTotalResults() / maxSize;
+			else if(response.getPageInfo().getTotalResults() % maxResultSize == 0) {
+				pages = response.getPageInfo().getTotalResults() / maxResultSize;
 			}
 			else {
-				pages = response.getPageInfo().getTotalResults() / maxSize;
+				pages = response.getPageInfo().getTotalResults() / maxResultSize;
 				pages++;
 			}
-			
-			
-			if(response.getPageInfo().getTotalResults() / maxSize;)
-			
-				//
 				
 			for (; pages > 0; pages--) {
 				for(Playlist p : response.getItems()) {
@@ -132,9 +126,7 @@ public class YouTubeMethods {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-        //return returnedPlaylistItem.getId();
         return returnedPlaylistItem;
-
     }
     
     public String getVideoChannel(String videoID) {
