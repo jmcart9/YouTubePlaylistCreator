@@ -36,6 +36,7 @@ public class YouTubeProgramMain {
     	YouTube yService = new YouTube.Builder(AuthYouTube.HTTP_TRANSPORT, AuthYouTube.JSON_FACTORY, AuthYouTube.authorize())
                 .setApplicationName("YouTube Playlist Creator")
                 .build();
+    	YouTubeMethods youtubeMethods = new YouTubeMethods(yService);
     	
     	//you use this to filter out invalid messages
     	//String query = "from:noreply@youtube.com \"just uploaded a video\"";
@@ -47,6 +48,22 @@ public class YouTubeProgramMain {
     	Set<String> uploaders = new HashSet<String>();
     	
         gmailMethods.setEmailMessageList(gService, "me", query);
+        gmailMethods.createVideoList();
+        
+        for(String url : gmailMethods.getVideoUrls()) {
+        	String uploader = youtubeMethods.getVideoChannel(gmailMethods.getVideoIDFromUrl(url));
+        	if(!uploadersAndVideos.containsKey(uploader)) {
+        		uploadersAndVideos.put
+        	}
+        	
+        	
+        }
+        
+        
+       
+        
+        
+        
         for(Message x : gmailMethods.getEmailMessageList()) {
         	
         	Message m = gmailMethods.getMessage(x.getId());
@@ -59,8 +76,9 @@ public class YouTubeProgramMain {
         	String formatted = format.format(date);
         	*/
         	
-        	/*
-            String uploader = gmailMethods.getVideoUploader(gmailMethods.messageBodyToString(m));
+        	String videoID = gmail
+            String channel = youtubeMethods.getVideoChannel(videoID);
+            		
             String videoURL = gmailMethods.getVideoUrl(gmailMethods.messageBodyToString(m));
             
             if(!uploadersAndVideos.containsKey(uploader)) {
@@ -78,7 +96,7 @@ public class YouTubeProgramMain {
         	System.out.println(uploader);
         	System.out.println("---");
         	
-        	*/
+        	
         }
         
         uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));  
@@ -108,15 +126,6 @@ public class YouTubeProgramMain {
         Map<String, String> titlesAndIDs = new HashMap<String, String>();
         
         try {
-            // Authorize the request.
-            Credential credentialY = AuthYouTube.authorize();
-
-            // This object is used to make YouTube Data API requests.
-            youtube = new YouTube.Builder(AuthYouTube.HTTP_TRANSPORT, AuthYouTube.JSON_FACTORY, credentialY)
-                    .setApplicationName("youtube-cmdline-playlistupdates-sample")
-                    .build();
-            
-            YouTubeMethods youtubeMethods = new YouTubeMethods(youtube);
 
             // Create a new, private playlist in the authorized user's channel.
             String playlistId = youtubeMethods.createPlaylist("testing playlist woo!").getId();
@@ -127,13 +136,8 @@ public class YouTubeProgramMain {
             	//YouTubeMethods.insertPlaylistItem(playlistId, s, youtube);
             }
 
-        } catch (GoogleJsonResponseException e) {
-            System.err.println("There was a service error: " + e.getDetails().getCode() + " : " + e.getDetails().getMessage());
-            e.printStackTrace();
-        } catch (IOException e) {
-            System.err.println("IOException: " + e.getMessage());
-            e.printStackTrace();
-        } catch (Throwable t) {
+        } 
+        catch (Throwable t) {
             System.err.println("Throwable: " + t.getMessage());
             t.printStackTrace();
         }
