@@ -44,60 +44,16 @@ public class YouTubeProgramMain {
     	//String query = "from:noreply@youtube.com \"Emory University\" OR \"Big Think\"";
     	String query = "from:noreply@youtube.com";
         
-    	Map<String,List<String>> uploadersAndVideos = new HashMap<String,List<String>>();
+    	Map<String, List<String>> uploadersAndVideos = new HashMap<String, List<String>>();
     	Set<String> uploaders = new HashSet<String>();
     	
         gmailMethods.setEmailMessageList(gService, "me", query);
         gmailMethods.createVideoList();
         
-        for(String url : gmailMethods.getVideoUrls()) {
-        	String uploader = youtubeMethods.getVideoChannel(gmailMethods.getVideoIDFromUrl(url));
-        	if(!uploadersAndVideos.containsKey(uploader)) {
-        		uploadersAndVideos.put
-        	}
-        	
+        for(String ) {
         	
         }
         
-        
-       
-        
-        
-        
-        for(Message x : gmailMethods.getEmailMessageList()) {
-        	
-        	Message m = gmailMethods.getMessage(x.getId());
-        	
-        	/*
-        	long date = m.getInternalDate();
-        	Date d = new Date(date);
-        	DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        	format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-        	String formatted = format.format(date);
-        	*/
-        	
-        	String videoID = gmail
-            String channel = youtubeMethods.getVideoChannel(videoID);
-            		
-            String videoURL = gmailMethods.getVideoUrl(gmailMethods.messageBodyToString(m));
-            
-            if(!uploadersAndVideos.containsKey(uploader)) {
-            	List<String> videoIDs = new LinkedList<String>();
-            	videoIDs.add(gmailMethods.getVideoIDFromUrl(videoURL));
-            	uploadersAndVideos.put(uploader, videoIDs);
-            }
-            else {
-            	uploadersAndVideos.get(uploader).add(gmailMethods.getVideoIDFromUrl(videoURL));
-            }
-        	
-            
-            System.out.println(formatted);
-        	System.out.println(videoURL);
-        	System.out.println(uploader);
-        	System.out.println("---");
-        	
-        	
-        }
         
         uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));  
               
