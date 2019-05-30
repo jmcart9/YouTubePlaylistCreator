@@ -7,9 +7,9 @@ build
 
 # Credentials json file. It contails a client secret info which should be private
 .credentials/youtube-java-quickstart/
-src/main/resources/credentials.json
-src/main/resources/client_secret.json
-src/main/resources/client_secrets.json
+**/credentials.json
+**/client_secret.json
+**/client_secrets.json
 
 # User tokens
 tokens/StoredCredential
