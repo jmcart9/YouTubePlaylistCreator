@@ -50,10 +50,6 @@ public class YouTubeProgramMain {
         gmailMethods.setEmailMessageList(gService, "me", query);
         gmailMethods.createVideoList();
         
-        for(String ) {
-        	
-        }
-        
         
         uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));  
               
