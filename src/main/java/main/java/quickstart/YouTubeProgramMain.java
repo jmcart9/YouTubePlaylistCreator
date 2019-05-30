@@ -44,56 +44,34 @@ public class YouTubeProgramMain {
     	//String query = "from:noreply@youtube.com \"Emory University\" OR \"Big Think\"";
     	String query = "from:noreply@youtube.com";
         
-    	Map<String, List<String>> uploadersAndVideos = new HashMap<String, List<String>>();
+    	//keys: uploader. value: video list
+    	Map<String, LinkedList<String>> uploadersAndVideos = new HashMap<String, LinkedList<String>>();
+    	
+    	//
     	Set<String> uploaders = new HashSet<String>();
     	
         gmailMethods.setEmailMessageList(gService, "me", query);
         gmailMethods.createVideoList();
         
+        //test this
         
-        uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));  
-              
-        /*
-         *
-         * */
-        
-        // This OAuth 2.0 access scope allows for full read/write access to the
-        // authenticated user's account.
-        
-        List<String> scopes = Lists.newArrayList("https://www.googleapis.com/auth/youtube");
-    	YouTube youtube;
-    	
-        String VIDEO_ID1 = "WM8bTdBs-cw";
-        String VIDEO_ID2 = "PrDzd4ufypE";
-        String VIDEO_ID3 = "fI1UKP6u4mo";
-        ArrayList<String> list = new ArrayList<String>();
-        list.add(VIDEO_ID1);
-        list.add(VIDEO_ID2);
-        list.add(VIDEO_ID3);
-
-        //list of playlists from user's account
-        List<Integer> playlists;
-        
-        //map of playlist ids and titles
-        Map<String, String> titlesAndIDs = new HashMap<String, String>();
-        
-        try {
-
-            // Create a new, private playlist in the authorized user's channel.
-            String playlistId = youtubeMethods.createPlaylist("testing playlist woo!").getId();
-
-            // If a valid playlist was created, add a video to that playlist.
-            //YouTubeMethods.insertPlaylistItem(playlistId, VIDEO_ID, youtube);
-            for(String s : list) {
-            	//YouTubeMethods.insertPlaylistItem(playlistId, s, youtube);
-            }
-
-        } 
-        catch (Throwable t) {
-            System.err.println("Throwable: " + t.getMessage());
-            t.printStackTrace();
+        for(String url : gmailMethods.getVideoUrls()) {
+        	String id = gmailMethods.getVideoIDFromUrl(url);
+        	String uploader = youtubeMethods.getVideoChannel(id);
+        	if (!uploadersAndVideos.containsKey(uploader)) {
+        		uploadersAndVideos.put(uploader, new LinkedList());
+        		uploadersAndVideos.get(uploader).add(id);
+        	}
+        	else {
+        		uploadersAndVideos.get(uploader).add(id);
+        	}
         }
         
+        //create playlist by uploader
+        
+        //uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));  
+              
+       
         
     }
 
