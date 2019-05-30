@@ -3,7 +3,7 @@ apply plugin: 'application'
 apply plugin: 'eclipse'
 
 mainClassName = 'YouTubeProgramMain'
-sourceCompatibility = 11
+sourceCompatibility = 12
 targetCompatibility = sourceCompatibility
 version = '1.0'
 
