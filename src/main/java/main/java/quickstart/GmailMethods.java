@@ -25,6 +25,7 @@ public class GmailMethods {
     public GmailMethods(Gmail service){
     	this.service = service;
     	this.listOfEmailMessages = new ArrayList<Message>();
+    	this.videoUrls = new ArrayList<String>();
     }
     
     //fill a list containing email messages from the user's inbox which match the query
