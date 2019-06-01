@@ -67,6 +67,11 @@ public class YouTubeProgramMain {
         	}
         }
         
+        System.out.println(uploadersAndVideos.keySet());
+        for (String i : uploadersAndVideos.keySet()) {
+        	System.out.println(i + ": " + uploadersAndVideos.get(i).toString());
+        }
+        
         //create playlist by uploader
         
         //uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));  
