@@ -1,7 +1,8 @@
 # YouTube Playlist Creator
 
 ###### Motivation. 
-I subscribe to a lot of informative YouTube channels. In fact, I subscribe to so many channels that, at the moment, I have over 1,000 unopened video upload notifications within my inbox. For an individual such as myself who desires to have a clean inbox, this mass of clutter is not desireable. Unfortunately, if I delete the notifications without having watched their respective videos, realistically I will not remember to watch them. If only there was a way to delete the video notifications from my inbox while adding the videos to a YouTube playlist. Then my inbox would be clean, and I could just use the playlist at my convenience.
+I subscribe to informative YouTube channels. When a video is uploaded onto one of those channels, YouTube sends a notification to my Gmail inbox. I subscribe to so many channels that, at the time of this writing, I have over a thousand video notifications within my inbox. This clutter is undesireable, so the notifications need to be deleted. Unfortunately, if the notifications are deleted before their linked videos are viewed, realistically I will not remember to watch them. 
+There needs to be a way to delete the video notifications from my gmail inbox while adding the videos to YouTube playlists. Then my inbox would be clean, and I could use the playlists at my convenience.
 
 There is a way to do that. Hence the existence of this application. 
 
