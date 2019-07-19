@@ -2,31 +2,20 @@ package main.java.quickstart;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.gmail.Gmail;
-import com.google.api.services.gmail.model.Message;
 import com.google.api.services.youtube.YouTube;
-import com.google.common.collect.Lists;
 
 
 
 public class YouTubeProgramMain {
 
-    public static void main(String... args) throws IOException, GeneralSecurityException {
+    public static void main(String... args) throws IOException {
     	
     	Gmail gService = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
     			.setApplicationName("YouTube Playlist Creator")
@@ -45,10 +34,10 @@ public class YouTubeProgramMain {
     	String query = "from:noreply@youtube.com";
         
     	//keys: uploader. value: video list
-    	Map<String, LinkedList<String>> uploadersAndVideos = new HashMap<String, LinkedList<String>>();
+    	Map<String, LinkedList<String>> uploadersAndVideos = new HashMap<>();
     	
     	//
-    	Set<String> uploaders = new HashSet<String>();
+    	Set<String> uploaders = new HashSet<>();
     	
         gmailMethods.setEmailMessageList(gService, "me", query);
         gmailMethods.createVideoList();
@@ -68,8 +57,8 @@ public class YouTubeProgramMain {
         }
         
         System.out.println(uploadersAndVideos.keySet());
-        for (String i : uploadersAndVideos.keySet()) {
-        	System.out.println(i + ": " + uploadersAndVideos.get(i).toString());
+        for (Map.Entry<String, LinkedList<String>> i : uploadersAndVideos.entrySet()) {
+        	System.out.println(i.toString());
         }
         
         //create playlist by uploader
