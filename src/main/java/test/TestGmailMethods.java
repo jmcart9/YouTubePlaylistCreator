@@ -22,9 +22,9 @@ public class TestGmailMethods {
 	
 	static GmailMethods gmailMethods;
 	static Gmail service;
-	final String query = "from:noreply@youtube.com";;
-	final String userID = "thisistheforestprimeval@gmail.com";
-	final String messageID = "169c3b18a7d9dadb";
+	static final String query = "from:noreply@youtube.com";;
+	static final String userID = "thisistheforestprimeval@gmail.com";
+	static final String messageID = "169c3b18a7d9dadb";
 	
 	Message message;
 	
@@ -36,7 +36,7 @@ public class TestGmailMethods {
 		gmailMethods = new GmailMethods(service);
 	}
 	
-	//@Test
+	@Test
 	public void testGmailService() {
 		assertNotEquals(service, null);
 		assertEquals(service.getApplicationName(), "YouTube Playlist Creator");
@@ -44,8 +44,8 @@ public class TestGmailMethods {
 		System.out.println("gmail service is okay, I think: " + service.toString());
 	}
 	
-	//@Test
-	public void testSetEmailMessageList() throws IOException {
+	@Test
+	public void testSetEmailMessageList(){
 		
 		List<Message> list = gmailMethods.getEmailMessageList();
 		
@@ -63,14 +63,14 @@ public class TestGmailMethods {
 		System.out.println("EmailMessageList empty? " + list.isEmpty());
 	}
 	
-	//@Test
-	public void testSetEmailMessageListSIMPLE() throws IOException {
+	@Test
+	public void testSetEmailMessageListSIMPLE() {
 		gmailMethods.setEmailMessageList(service, userID, query);
 		assertNotNull(gmailMethods.getEmailMessageList());
 		assertFalse(gmailMethods.getEmailMessageList().isEmpty());
 	}
 	
-	//@Test
+	@Test
 	public void testGetEmailMessageList() {
 		List<Message> list = gmailMethods.getEmailMessageList();
 		
@@ -78,7 +78,7 @@ public class TestGmailMethods {
 		System.out.println("EmailMessageList: " + list.toString());
 	}
 	
-	//@Test
+	@Test
 	public void testGetMessage() {
 		
 		message = gmailMethods.getMessage(messageID);
@@ -88,7 +88,7 @@ public class TestGmailMethods {
 		
 	}
 	
-	//@Test
+	@Test
 	public void testMessageBodyToString() {
 		message = gmailMethods.getMessage(messageID);
 		String out = gmailMethods.messageBodyToString(message);
@@ -98,7 +98,7 @@ public class TestGmailMethods {
 		System.out.println(out);
 	}
 	
-	//@Test
+	@Test
 	public void testGetVideoUrl() {
 		String s = gmailMethods.getVideoUrl(gmailMethods.messageBodyToString(gmailMethods.getMessage(messageID)));
 		assertNotNull(s);
@@ -118,12 +118,12 @@ public class TestGmailMethods {
 		list.forEach(System.out::println);
 	}
 	
-	//@Test
+	@Test
 	public void testgetVideoUrls(){
 		
 	}
 	
-	//@Test
+	@Test
 	public void testGetVideoIDFromUrl() {
 		String url1 = "https://www.youtube.com/watch?v=oBIQbja-BPY";
 		String url2 = "http://youtu.be/dQw4w9WgXcQ";

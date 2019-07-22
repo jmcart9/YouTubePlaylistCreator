@@ -18,7 +18,7 @@ public class YouTubeMethods {
 	YouTube service;
     String userID = "me";
     
-    public HashSet<String> extantPlaylists = new HashSet<String>();
+    public HashSet<String> extantPlaylists = new HashSet<>();
  
     public HashSet<String> getExtantPlaylists() {
 		return extantPlaylists;

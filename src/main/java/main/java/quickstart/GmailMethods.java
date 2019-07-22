@@ -24,13 +24,13 @@ public class GmailMethods {
     
     public GmailMethods(Gmail service){
     	this.service = service;
-    	this.listOfEmailMessages = new ArrayList<Message>();
-    	this.videoUrls = new ArrayList<String>();
+    	this.listOfEmailMessages = new ArrayList<>();
+    	this.videoUrls = new ArrayList<>();
     }
     
     //fill a list containing email messages from the user's inbox which match the query
     public void setEmailMessageList(Gmail service, String userId, String query) {
-    	List<Message> messages = new ArrayList<Message>();
+    	List<Message> messages = new ArrayList<>();
     	try {
     		//for some reason, the messages returned below contain only the message id and thread id, not the payload or anything else
     		ListMessagesResponse response = service.users().messages().list(userId).setQ(query).execute();
@@ -82,7 +82,7 @@ public class GmailMethods {
 	public String getVideoUrl(String m) {
 		if(m.contains("http://www.youtube.com/watch?")) {
 			int i = m.indexOf("http://www.youtube.com/watch?");
-			return m.substring(i, m.indexOf("&", i));
+			return m.substring(i, m.indexOf('&', i));
 		}
 		else return ":";
 		

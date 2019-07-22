@@ -1,7 +1,7 @@
 package main.java.quickstart;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -36,13 +36,11 @@ public class YouTubeProgramMain {
     	//keys: uploader. value: video list
     	Map<String, LinkedList<String>> uploadersAndVideos = new HashMap<>();
     	
-    	//
+    	
     	Set<String> uploaders = new HashSet<>();
     	
         gmailMethods.setEmailMessageList(gService, "me", query);
         gmailMethods.createVideoList();
-        
-        //test this
         
         for(String url : gmailMethods.getVideoUrls()) {
         	String id = gmailMethods.getVideoIDFromUrl(url);
@@ -56,6 +54,8 @@ public class YouTubeProgramMain {
         	}
         }
         
+        uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));  
+        
         System.out.println(uploadersAndVideos.keySet());
         for (Map.Entry<String, LinkedList<String>> i : uploadersAndVideos.entrySet()) {
         	System.out.println(i.toString());
@@ -63,10 +63,7 @@ public class YouTubeProgramMain {
         
         //create playlist by uploader
         
-        //uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));  
-              
-       
-        
+                     
     }
 
 }
