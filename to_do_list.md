@@ -23,6 +23,7 @@ Stuff that needs to be done so that the app will do what it's supposed to do.
     4. Logging.
     5. Test classes. (done!)
     6. Modify youtube and gmail method classes so that they process only youtube and gmail stuff. For example, the gmail class processes lists. That functionality should be in a distinct utility class.
+    7. Reorganizes classes and packages.
 
 ## Fix errors
 
