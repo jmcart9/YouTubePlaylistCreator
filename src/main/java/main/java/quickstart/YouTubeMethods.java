@@ -88,6 +88,7 @@ public class YouTubeMethods {
 			playlistInserted = playlistInsertCommand.execute();
 			extantPlaylists.add(title);
 		} 
+        //what if the playlist cannot be created???
 		catch (IOException e) {
 			e.printStackTrace();
 		}

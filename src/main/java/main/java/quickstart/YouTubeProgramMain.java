@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.Playlist;
 
 
 
@@ -56,13 +57,20 @@ public class YouTubeProgramMain {
         
         uploadersAndVideos.forEach((k,v) -> Collections.reverse(v));  
         
+        //create playlist by uploader
+        
         System.out.println(uploadersAndVideos.keySet());
         for (Map.Entry<String, LinkedList<String>> i : uploadersAndVideos.entrySet()) {
         	System.out.println(i.toString());
+        	
+        	 String title = i.getKey();
+        	 Playlist playlist =  youtubeMethods.createPlaylist(title);
+        	 String playlistID = playlist.getId();
+        	 
+        	 for(String s : i.getValue()) {
+        		 youtubeMethods.insertPlaylistItem(playlistID, s, title);
+        	 }	         	 
         }
-        
-        //create playlist by uploader
-        
                      
     }
 
