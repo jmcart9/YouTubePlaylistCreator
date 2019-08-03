@@ -34,9 +34,8 @@ public class YouTubeProgramMain {
     	//String query = "from:noreply@youtube.com \"Emory University\" OR \"Big Think\"";
     	String query = "from:noreply@youtube.com";
         
-    	//keys: uploader. value: video list
+    	//key: uploader. value: video list from uploader
     	Map<String, LinkedList<String>> uploadersAndVideos = new HashMap<>();
-    	
     	
     	Set<String> uploaders = new HashSet<>();
     	
