@@ -1,4 +1,4 @@
-package main.java.quickstart;
+package init;
 
 import java.io.IOException;
 import java.util.Collections;

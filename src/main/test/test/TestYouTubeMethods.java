@@ -17,8 +17,8 @@ import com.google.api.services.youtube.model.Playlist;
 import com.google.api.services.youtube.model.PlaylistItem;
 import com.google.api.services.youtube.model.PlaylistListResponse;
 
-import main.java.quickstart.AuthYouTube;
-import main.java.quickstart.YouTubeMethods;
+import init.AuthYouTube;
+import init.YouTubeMethods;
 
 public class TestYouTubeMethods {
 	

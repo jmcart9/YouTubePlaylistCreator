@@ -1,4 +1,4 @@
-package main.java.quickstart;
+package init;
 
 
 import com.google.api.client.auth.oauth2.Credential;

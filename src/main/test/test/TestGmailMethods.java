@@ -16,8 +16,8 @@ import org.junit.Test;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 
-import main.java.quickstart.AuthGmail;
-import main.java.quickstart.GmailMethods;
+import init.AuthGmail;
+import init.GmailMethods;
 
 public class TestGmailMethods {
 	
