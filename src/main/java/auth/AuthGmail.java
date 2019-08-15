@@ -1,4 +1,9 @@
-package init;
+
+
+
+
+
+package auth;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +23,8 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.gmail.GmailScopes;
+
+import init.YouTubeProgramMain;
 
 /**
  * Shared class used by every sample. Contains methods for authorizing a user and caching credentials.

@@ -1,4 +1,4 @@
-package init;
+package auth;
 
 
 import com.google.api.client.auth.oauth2.Credential;

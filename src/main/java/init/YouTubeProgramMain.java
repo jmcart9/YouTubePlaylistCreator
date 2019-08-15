@@ -12,6 +12,11 @@ import com.google.api.services.gmail.Gmail;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Playlist;
 
+import auth.AuthGmail;
+import auth.AuthYouTube;
+import utils.GmailMethods;
+import utils.YouTubeMethods;
+
 
 
 public class YouTubeProgramMain {
