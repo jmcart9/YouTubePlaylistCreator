@@ -8,3 +8,4 @@
  */
 
 rootProject.name = 'YouTubePlaylistCreator'
+include('main.java.quickstart.YouTubeProgramMain')

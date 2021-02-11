@@ -18,6 +18,8 @@ public class YouTubeProgramMain {
 
     public static void main(String... args) throws IOException {
     	
+    	System.out.println("xxx");
+    	
     	Gmail gService = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
     			.setApplicationName("YouTube Playlist Creator")
     			.build();

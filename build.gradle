@@ -1,32 +1,56 @@
-apply plugin: 'java'
-sourceCompatibility = 12.0.1
-targetCompatibility = 12.0.1
-apply plugin: 'application'
-apply plugin: 'eclipse'
+plugins {
+    id 'application' 
+}
 
-mainClassName = 'YouTubeProgramMain'
-version = '1.0'
+apply plugin: 'java'
 
 repositories {
     mavenCentral()
+    google()
 }
 
 dependencies {
-	compile 'com.google.api-client:google-api-client:1.28.0'
-    compile 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
-    compile 'com.google.apis:google-api-services-gmail:v1-rev83-1.23.0'
-    compile 'com.google.apis:google-api-services-youtube:v3-rev206-1.25.0'
+	implementation 'com.google.api-client:google-api-client:1.30.10'
+
+	//implementation 'com.google.api-client:google-api-client:1.28.0'
+    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    implementation 'com.google.apis:google-api-services-gmail:v1-rev83-1.23.0'
+    implementation 'com.google.apis:google-api-services-youtube:v3-rev206-1.25.0'
     
-    compile 'com.google.api-client:google-api-client-servlet:1.25.0'
-    compile 'com.google.api-client:google-api-client-appengine:1.25.0'
-    compile 'com.google.api-client:google-api-client-gson:1.25.0'
-    compile 'com.google.api-client:google-api-client-jackson2:1.25.0'
-    compile 'com.google.api-client:google-api-client-java6:1.25.0'
-    compile 'com.google.api-client:google-api-client-protobuf:1.25.0'
-    compile 'com.google.api-client:google-api-client-xml:1.25.0'
+    implementation 'com.google.api-client:google-api-client-servlet:1.25.0'
+    implementation 'com.google.api-client:google-api-client-appengine:1.25.0'
+    implementation 'com.google.api-client:google-api-client-gson:1.25.0'
+    implementation 'com.google.api-client:google-api-client-jackson2:1.25.0'
+    implementation 'com.google.api-client:google-api-client-java6:1.25.0'
+    implementation 'com.google.api-client:google-api-client-protobuf:1.25.0'
+    implementation 'com.google.api-client:google-api-client-xml:1.25.0'
     
-    //compile 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    implementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
+    
+    testImplementation 'junit:junit:4.13' 
+    implementation 'com.google.guava:guava:29.0-jre'
     
     //testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
     //testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
 }
+
+application {
+    mainClass = 'main.java.quickstart.YouTubeProgramMain' 
+}
+
+
+///
+
+
+//apply plugin: 'java'
+//sourceCompatibility = 15.0
+//targetCompatibility = 15.0
+//apply plugin: 'application'
+//apply plugin: 'eclipse'
+
+//mainClassName = 'YouTubeProgramMain'
+//version = '1.0'
+
+
+
+

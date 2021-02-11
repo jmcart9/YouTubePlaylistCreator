@@ -3,3 +3,7 @@ development notes
 When scopes or users are changed, the tokens folder needs to be deleted.
 
 If the application needs to be run from a server, confer [here] (https://developers.google.com/identity/protocols/OAuth2WebServer).
+
+gradle wrapper version needs to match what's in local environment
+https://docs.gradle.org/current/userguide/gradle_wrapper.html
+thi command will generate the correct wrapper '$ gradle wrapper'
