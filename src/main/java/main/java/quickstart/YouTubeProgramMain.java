@@ -1,6 +1,7 @@
 package main.java.quickstart;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,25 +9,26 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Playlist;
 
-
-
 public class YouTubeProgramMain {
 
-    public static void main(String... args) throws IOException {
+    public static void main(String... args) throws IOException, GeneralSecurityException {
     	
     	System.out.println("xxx");
     	
     	Gmail gService = new Gmail.Builder(AuthGmail.HTTP_TRANSPORT, AuthGmail.JSON_FACTORY, AuthGmail.authorize())
-    			.setApplicationName("YouTube Playlist Creator")
+    			.setApplicationName("YouTubePlaylistCreator")
     			.build();
     	GmailMethods gmailMethods = new GmailMethods(gService);
     	
-    	YouTube yService = new YouTube.Builder(AuthYouTube.HTTP_TRANSPORT, AuthYouTube.JSON_FACTORY, AuthYouTube.authorize())
-                .setApplicationName("YouTube Playlist Creator")
+    	final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+    	YouTube yService = new YouTube.Builder(httpTransport, AuthYouTube.JSON_FACTORY, AuthYouTube.authorize(httpTransport))
+                .setApplicationName("YouTubePlaylistCreator")
                 .build();
     	YouTubeMethods youtubeMethods = new YouTubeMethods(yService);
     	
@@ -72,7 +74,5 @@ public class YouTubeProgramMain {
         		 youtubeMethods.insertPlaylistItem(playlistID, s, title);
         	 }	         	 
         }
-                     
     }
-
 }

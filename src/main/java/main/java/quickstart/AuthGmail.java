@@ -1,5 +1,6 @@
 package main.java.quickstart;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,12 +25,12 @@ import com.google.api.services.gmail.GmailScopes;
  */
 public class AuthGmail {
 
-	private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+	private static final String CREDENTIALS_FILE_PATH = "client_secret.json";
 	public static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static final List<String> SCOPES = Collections.singletonList(GmailScopes.MAIL_GOOGLE_COM);
 	private static final String TOKENS_DIRECTORY_PATH = "tokens";
 	
-	public static HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+	public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 	
 	
     /**
@@ -37,13 +38,13 @@ public class AuthGmail {
      * @throws GeneralSecurityException 
      *
      */
-    public static Credential authorize() {
+    public static Credential authorize() throws IOException{
 
     	try {
     		//final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         	
         	// Load client secrets.
-            InputStream in = YouTubeProgramMain.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+            InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH);
             GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
             // Build flow and trigger user authorization request.
@@ -52,11 +53,13 @@ public class AuthGmail {
                     .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                     .setAccessType("offline")
                     .build();
+            
             LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+            
             return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     	}
     	catch(IOException e) {
-    		System.out.println("credentials or json factory not found");
+    		System.out.println("gmail credentials or json factory not found");
     		return null;
     	}
     }

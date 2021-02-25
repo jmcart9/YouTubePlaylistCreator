@@ -1,7 +1,10 @@
 package main.java.quickstart;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Playlist;
@@ -18,20 +21,27 @@ public class YouTubeMethods {
 	YouTube service;
     String userID = "me";
     
-    public HashSet<String> extantPlaylists = new HashSet<>();
+    public Set<String> extantPlaylists = new HashSet<>();
  
-    public HashSet<String> getExtantPlaylists() {
+    public Set<String> getExtantPlaylists() {
 		return extantPlaylists;
 	}
 
 	public YouTubeMethods (YouTube service) {
     	this.service = service;
     	
-    	long maxResultSize = 50L;
+    	long maxResultSize = 5000L;
     	
 		try {
+			List parts = new ArrayList<String>();
+			parts.add("snippet");
 			YouTube.Playlists.List request = service.playlists().list("snippet");
-			PlaylistListResponse response = request.setMaxResults(maxResultSize).setMine(true).execute();
+//			PlaylistListResponse response = request.setMaxResults(maxResultSize).setMine(false).execute();
+			
+			request = request.setMaxResults(maxResultSize);
+			request = request.setMine(true);
+			PlaylistListResponse response = request.execute();
+
 			
 			long pages = 0;
 			
@@ -84,6 +94,9 @@ public class YouTubeMethods {
         Playlist playlistInserted = null;
 		
         try {
+        	List<String> partsList = new ArrayList<String>();
+        	partsList.add("snippet");
+        	partsList.add("status");
 			playlistInsertCommand = service.playlists().insert("snippet,status", youTubePlaylist);
 			playlistInserted = playlistInsertCommand.execute();
 			extantPlaylists.add(title);
@@ -121,6 +134,9 @@ public class YouTubeMethods {
         YouTube.PlaylistItems.Insert playlistItemsInsertCommand;
         PlaylistItem returnedPlaylistItem = null;
 		try {
+        	List<String> partsList = new ArrayList<String>();
+        	partsList.add("snippet");
+        	partsList.add("contentDetails");
 			playlistItemsInsertCommand = service.playlistItems().insert("snippet,contentDetails", playlistItem);
 			returnedPlaylistItem = playlistItemsInsertCommand.execute();
 		} 
@@ -132,7 +148,12 @@ public class YouTubeMethods {
     
     public String getVideoChannel(String videoID) {
     	try {
+    		List<String> partsList = new ArrayList<>();
+        	partsList.add("snippet");
 			YouTube.Videos.List request = service.videos().list("snippet");
+			
+			List<String> videoIds = new ArrayList<>();
+			videoIds.add(videoID);
 			VideoListResponse response = request.setId(videoID).execute();
 			//video IDs should be unique, so the items list should contain only one object
 		    return response.getItems().get(0).getSnippet().getChannelTitle();
