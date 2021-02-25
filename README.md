@@ -8,7 +8,10 @@ There is a way to do that. Hence the existence of this application.
 
 It's still a work in progress. If you want to try it or contribute to it, read [how to set up](https://github.com/jmcart9/YouTubeProgram/blob/master/set_up.md).
 
+Project is currently on-hold due to a bug with Google's YouTube data API.
+:(
+
 ###### Technologies used.
 
-+ Java 12. At the time of this writing, the most-recent version of Java.
-+ Gradle. For importing some of Google's APIs.
++ Java 15. 
++ Gradle.
