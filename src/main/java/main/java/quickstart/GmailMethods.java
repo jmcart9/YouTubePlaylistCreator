@@ -1,6 +1,7 @@
 package main.java.quickstart;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.regex.Pattern;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.ListMessagesResponse;
 import com.google.api.services.gmail.model.Message;
+import com.google.api.services.gmail.model.MessagePart;
 
 public class GmailMethods {
     
@@ -70,28 +72,67 @@ public class GmailMethods {
     
     //messages are encoded as base64 strings, so they need to be made less ugly
     public String messageBodyToString(Message m) {
-    	String messageBody64 = m.getPayload().getParts().get(0).getBody().getData();
-		Base64.Decoder decoder = Base64.getUrlDecoder();
-		byte[] decoded = decoder.decode(messageBody64);
-		return new String(decoded);
-		
+    	try {
+    		String data = extractBodyData(m.getPayload());
+    		if (data == null) return "";
+    		byte[] decoded = Base64.getUrlDecoder().decode(data);
+    		return new String(decoded, StandardCharsets.UTF_8);
+    	} catch (Exception e) {
+    		System.err.println("Failed to parse message body: " + e.getMessage());
+    		return "";
+    	}
+    }
+
+    // Recursively find the first text body data in a MIME message
+    private String extractBodyData(MessagePart part) {
+    	if (part == null) return null;
+    	// If this part has direct body data, use it
+    	if (part.getBody() != null && part.getBody().getData() != null) {
+    		return part.getBody().getData();
+    	}
+    	// Otherwise search sub-parts (prefer text/plain)
+    	if (part.getParts() != null) {
+    		for (MessagePart sub : part.getParts()) {
+    			if ("text/plain".equals(sub.getMimeType())
+    					&& sub.getBody() != null && sub.getBody().getData() != null) {
+    				return sub.getBody().getData();
+    			}
+    		}
+    		// Fall back to first sub-part with data
+    		for (MessagePart sub : part.getParts()) {
+    			String data = extractBodyData(sub);
+    			if (data != null) return data;
+    		}
+    	}
+    	return null;
     }
   
     //return the video url of a YouTube email message
-    //this should be done using the YouTube API, not the gmail API
 	public String getVideoUrl(String m) {
-		if(m.contains("http://www.youtube.com/watch?")) {
-			int i = m.indexOf("http://www.youtube.com/watch?");
-			return m.substring(i, m.indexOf('&', i));
+		if (m == null || m.isEmpty()) return "";
+		// Check for both https and http
+		String[] prefixes = {
+			"https://www.youtube.com/watch?",
+			"http://www.youtube.com/watch?"
+		};
+		for (String prefix : prefixes) {
+			if (m.contains(prefix)) {
+				int i = m.indexOf(prefix);
+				int end = m.indexOf('&', i);
+				if (end == -1) end = m.length();
+				return m.substring(i, end);
+			}
 		}
-		else return ":";
-		
+		return "";
 	}
   
-	//create list of video urls
+	//create list of video urls, skipping messages that don't contain valid URLs
 	public void createVideoList() {
 		for(Message x : listOfEmailMessages) {
-			videoUrls.add(getVideoUrl(messageBodyToString(x)));
+			String url = getVideoUrl(messageBodyToString(x));
+			if (url != null && !url.isEmpty()) {
+				videoUrls.add(url);
+			}
 		}
 	}
 	

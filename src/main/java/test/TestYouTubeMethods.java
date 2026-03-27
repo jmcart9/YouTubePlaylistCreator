@@ -53,7 +53,7 @@ public class TestYouTubeMethods {
 	//@Test
 	public void testGetExtantPlaylists() {
 		assertNotNull(youtubeMethods.getExtantPlaylists());
-		youtubeMethods.getExtantPlaylists().stream().forEach(System.out::println);
+		youtubeMethods.getExtantPlaylists().keySet().stream().forEach(System.out::println);
 		System.out.println(youtubeMethods.getExtantPlaylists().size());
 	}
 	
