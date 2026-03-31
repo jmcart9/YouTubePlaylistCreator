@@ -249,5 +249,42 @@ public class YouTubeMethods {
         System.out.println("Done! Copied " + success + "/" + videoIds.size()
                 + " videos into playlist '" + destinationTitle + "' (" + destPlaylistId + ")");
     }
+
+    /**
+     * Copy a playlist from one account to another.
+     * The source YouTubeMethods reads the playlist items (authenticated as the
+     * source account), and THIS instance creates/inserts into the destination
+     * playlist (authenticated as the destination account).
+     *
+     * @param source           YouTubeMethods authenticated as the source account
+     * @param sourcePlaylistId the playlist ID to copy from
+     * @param destinationTitle the title for the new playlist on this account
+     */
+    public void copyPlaylistFrom(YouTubeMethods source, String sourcePlaylistId, String destinationTitle) {
+        // 1. Use the SOURCE account to list videos (works even for private playlists)
+        java.util.List<String> videoIds = source.listPlaylistVideoIds(sourcePlaylistId);
+        if (videoIds.isEmpty()) {
+            System.out.println("Source playlist is empty or could not be read. Nothing to copy.");
+            return;
+        }
+
+        // 2. Use THIS (destination) account to create the playlist
+        String destPlaylistId = getOrCreatePlaylistId(destinationTitle);
+        if (destPlaylistId == null) {
+            System.err.println("Could not get/create destination playlist '" + destinationTitle + "'. Aborting.");
+            return;
+        }
+
+        // 3. Insert each video into the destination playlist (on this account)
+        int success = 0;
+        for (int i = 0; i < videoIds.size(); i++) {
+            String videoId = videoIds.get(i);
+            System.out.println("  Inserting video " + (i + 1) + "/" + videoIds.size() + ": " + videoId);
+            PlaylistItem result = insertPlaylistItem(destPlaylistId, videoId, destinationTitle);
+            if (result != null) success++;
+        }
+        System.out.println("Done! Copied " + success + "/" + videoIds.size()
+                + " videos into playlist '" + destinationTitle + "' (" + destPlaylistId + ")");
+    }
     
 }

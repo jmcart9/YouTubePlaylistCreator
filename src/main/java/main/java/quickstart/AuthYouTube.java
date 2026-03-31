@@ -55,13 +55,23 @@ public class AuthYouTube {
     
     /**
      * Authorizes the installed application to access user's protected data.
-     * @param httpTransport 
-     *
-     * @param scopes              list of scopes needed to run youtube upload.
-     * @param credentialDatastore name of the credential datastore to cache OAuth tokens
-     * @throws GeneralSecurityException 
+     * Uses the default token directory and port 8080.
      */
     public static Credential authorize(NetHttpTransport httpTransport) throws IOException, GeneralSecurityException {
+        return authorize(httpTransport, "user", TOKENS_DIRECTORY_PATH, 8080);
+    }
+
+    /**
+     * Authorizes a specific account. Each userLabel / tokensDir combination
+     * stores its own OAuth tokens so multiple Google accounts can coexist.
+     *
+     * @param httpTransport the HTTP transport
+     * @param userLabel     label stored in the credential datastore (e.g. "source", "destination")
+     * @param tokensDir     directory to cache this account's OAuth tokens
+     * @param port          local port for the OAuth redirect (use different ports for each account)
+     */
+    public static Credential authorize(NetHttpTransport httpTransport, String userLabel,
+                                       String tokensDir, int port) throws IOException, GeneralSecurityException {
 
         // Load client secrets.
     	InputStream in = new FileInputStream(CREDENTIALS_FILE_PATH);
@@ -76,25 +86,13 @@ public class AuthYouTube {
             System.exit(1);
         }
 
-        //old
-        // This creates the credentials datastore at TOKENS_DIRECTORY_PATH
-//        FileDataStoreFactory fileDataStoreFactory = new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH));
-//        DataStore<StoredCredential> datastore = fileDataStoreFactory.getDataStore(credentialDatastore);
-//        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-//                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, scopes)
-//        		.setCredentialDataStore(datastore)
-//                .build();
-        
-        //from gmail
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
         		httpTransport, JSON_FACTORY, clientSecrets, scopes)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(tokensDir)))
                 .build();
 
-        // Build the local server and bind it to port 8080
-        LocalServerReceiver localReceiver = new LocalServerReceiver.Builder().setPort(8080).build();
+        LocalServerReceiver localReceiver = new LocalServerReceiver.Builder().setPort(port).build();
 
-        // Authorize.
-        return new AuthorizationCodeInstalledApp(flow, localReceiver).authorize("user");
+        return new AuthorizationCodeInstalledApp(flow, localReceiver).authorize(userLabel);
     }
 }
