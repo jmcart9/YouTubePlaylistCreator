@@ -1,6 +1,8 @@
 package main.java.quickstart;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.youtube.YouTube;
@@ -16,6 +19,10 @@ import com.google.api.services.youtube.YouTube;
 public class YouTubeProgramMain {
 
     public static void main(String... args) throws IOException, GeneralSecurityException {
+
+    	// Use UTF-8 output so non-ASCII playlist titles render correctly on Windows
+    	System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+    	System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
 
     	Scanner scanner = new Scanner(System.in);
 
@@ -260,7 +267,9 @@ public class YouTubeProgramMain {
     	int total = playlistEntries.size();
     	int playlistNum = 0;
     	int totalSuccess = 0;
+    	int totalSkipped = 0;
     	int totalFailed = 0;
+    	boolean quotaHit = false;
 
     	for (Map.Entry<String, String> entry : playlistEntries) {
     		playlistNum++;
@@ -273,8 +282,24 @@ public class YouTubeProgramMain {
     		System.out.println("========================================");
 
     		try {
-    			destMethods.copyPlaylistFrom(sourceMethods, sourcePlaylistId, title);
-    			totalSuccess++;
+    			int copied = destMethods.copyPlaylistFrom(sourceMethods, sourcePlaylistId, title);
+    			if (copied > 0) {
+    				totalSuccess++;
+    			} else {
+    				totalSkipped++;  // empty or unreadable playlist
+    			}
+    		} catch (GoogleJsonResponseException e) {
+    			totalFailed++;
+    			int remaining = total - playlistNum;
+    			System.err.println();
+    			System.err.println("*** YouTube API quota exceeded! ***");
+    			System.err.println("Successfully copied " + totalSuccess + " playlist(s) before hitting the limit.");
+    			if (remaining > 0) {
+    				System.err.println("Skipping the remaining " + remaining + " playlist(s).");
+    				System.err.println("Quota resets at midnight Pacific Time. Re-run to continue where you left off.");
+    			}
+    			quotaHit = true;
+    			break;
     		} catch (Exception e) {
     			System.err.println("Failed to copy playlist '" + title + "': " + e.getMessage());
     			e.printStackTrace();
@@ -283,10 +308,19 @@ public class YouTubeProgramMain {
     	}
 
     	System.out.println();
-    	System.out.println("=== All done! ===");
-    	System.out.println("Playlists copied successfully: " + totalSuccess + "/" + total);
+    	System.out.println("=== Summary ===");
+    	System.out.println("Playlists copied:  " + totalSuccess + "/" + total);
+    	if (totalSkipped > 0) {
+    		System.out.println("Playlists skipped (empty): " + totalSkipped);
+    	}
     	if (totalFailed > 0) {
-    		System.out.println("Playlists that failed: " + totalFailed);
+    		System.out.println("Playlists failed:  " + totalFailed);
+    	}
+    	if (quotaHit) {
+    		System.out.println("Playlists not attempted: " + (total - playlistNum));
+    		System.out.println();
+    		System.out.println("TIP: Re-run after quota resets (midnight PT) to copy the remaining playlists.");
+    		System.out.println("     Already-copied playlists will be reused (not duplicated).");
     	}
     }
 }

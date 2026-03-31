@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Playlist;
 import com.google.api.services.youtube.model.PlaylistItem;
@@ -188,8 +189,9 @@ public class YouTubeMethods {
      *
      * @param playlistId the source playlist ID
      * @return ordered list of video IDs in the playlist
+     * @throws GoogleJsonResponseException if quota is exceeded (so callers can stop)
      */
-    public java.util.List<String> listPlaylistVideoIds(String playlistId) {
+    public java.util.List<String> listPlaylistVideoIds(String playlistId) throws GoogleJsonResponseException {
         java.util.List<String> videoIds = new java.util.ArrayList<>();
         try {
             YouTube.PlaylistItems.List request = service.playlistItems()
@@ -208,6 +210,10 @@ public class YouTubeMethods {
                 response = request.setPageToken(nextPage).execute();
             }
             System.out.println("Found " + videoIds.size() + " video(s) in source playlist " + playlistId);
+        } catch (GoogleJsonResponseException e) {
+            // Re-throw quota errors so the caller can detect them and stop
+            System.err.println("Failed to list items for playlist " + playlistId + ": " + e.getMessage());
+            throw e;
         } catch (IOException e) {
             System.err.println("Failed to list items for playlist " + playlistId + ": " + e.getMessage());
             e.printStackTrace();
@@ -223,7 +229,7 @@ public class YouTubeMethods {
      * @param sourcePlaylistId the ID of the playlist to copy from (can be any public/unlisted playlist)
      * @param destinationTitle the title for the destination playlist (created if it doesn't exist)
      */
-    public void copyPlaylist(String sourcePlaylistId, String destinationTitle) {
+    public void copyPlaylist(String sourcePlaylistId, String destinationTitle) throws GoogleJsonResponseException {
         // 1. List videos from the source playlist
         java.util.List<String> videoIds = listPlaylistVideoIds(sourcePlaylistId);
         if (videoIds.isEmpty()) {
@@ -256,35 +262,63 @@ public class YouTubeMethods {
      * source account), and THIS instance creates/inserts into the destination
      * playlist (authenticated as the destination account).
      *
+     * On re-runs, videos already present in the destination are skipped to
+     * conserve API quota (listing is 1 unit per 50 items vs 50 units per insert).
+     *
      * @param source           YouTubeMethods authenticated as the source account
      * @param sourcePlaylistId the playlist ID to copy from
      * @param destinationTitle the title for the new playlist on this account
+     * @return the number of videos successfully inserted (0 if nothing new to copy)
+     * @throws GoogleJsonResponseException if quota is exceeded
      */
-    public void copyPlaylistFrom(YouTubeMethods source, String sourcePlaylistId, String destinationTitle) {
+    public int copyPlaylistFrom(YouTubeMethods source, String sourcePlaylistId,
+                                String destinationTitle) throws GoogleJsonResponseException {
         // 1. Use the SOURCE account to list videos (works even for private playlists)
-        java.util.List<String> videoIds = source.listPlaylistVideoIds(sourcePlaylistId);
-        if (videoIds.isEmpty()) {
+        java.util.List<String> sourceVideoIds = source.listPlaylistVideoIds(sourcePlaylistId);
+        if (sourceVideoIds.isEmpty()) {
             System.out.println("Source playlist is empty or could not be read. Nothing to copy.");
-            return;
+            return 0;
         }
 
-        // 2. Use THIS (destination) account to create the playlist
+        // 2. Use THIS (destination) account to create or find the playlist
         String destPlaylistId = getOrCreatePlaylistId(destinationTitle);
         if (destPlaylistId == null) {
             System.err.println("Could not get/create destination playlist '" + destinationTitle + "'. Aborting.");
-            return;
+            return 0;
         }
 
-        // 3. Insert each video into the destination playlist (on this account)
+        // 3. Check what's already in the destination (cheap: 1 quota unit per 50 items)
+        java.util.List<String> existingVideoIds = listPlaylistVideoIds(destPlaylistId);
+        java.util.Set<String> existingSet = new java.util.HashSet<>(existingVideoIds);
+
+        // 4. Filter to only videos not yet in the destination
+        java.util.List<String> toInsert = new java.util.ArrayList<>();
+        for (String videoId : sourceVideoIds) {
+            if (!existingSet.contains(videoId)) {
+                toInsert.add(videoId);
+            }
+        }
+
+        if (toInsert.isEmpty()) {
+            System.out.println("All " + sourceVideoIds.size() + " video(s) already in destination. Skipping!");
+            return 0;
+        }
+
+        System.out.println(existingVideoIds.size() + " video(s) already in destination, "
+                + toInsert.size() + " new video(s) to insert.");
+
+        // 5. Insert only the missing videos (expensive: 50 quota units each)
         int success = 0;
-        for (int i = 0; i < videoIds.size(); i++) {
-            String videoId = videoIds.get(i);
-            System.out.println("  Inserting video " + (i + 1) + "/" + videoIds.size() + ": " + videoId);
+        for (int i = 0; i < toInsert.size(); i++) {
+            String videoId = toInsert.get(i);
+            System.out.println("  Inserting video " + (i + 1) + "/" + toInsert.size() + ": " + videoId);
             PlaylistItem result = insertPlaylistItem(destPlaylistId, videoId, destinationTitle);
             if (result != null) success++;
         }
-        System.out.println("Done! Copied " + success + "/" + videoIds.size()
-                + " videos into playlist '" + destinationTitle + "' (" + destPlaylistId + ")");
+        System.out.println("Done! Inserted " + success + "/" + toInsert.size()
+                + " new videos into playlist '" + destinationTitle + "' (" + destPlaylistId + ")"
+                + " [total now: " + (existingVideoIds.size() + success) + "/" + sourceVideoIds.size() + "]");
+        return success;
     }
     
 }
