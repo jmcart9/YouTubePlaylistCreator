@@ -22,7 +22,8 @@ public class YouTubeProgramMain {
     	System.out.println("=== YouTube Playlist Creator ===");
     	System.out.println("1) Create playlists from Gmail notifications");
     	System.out.println("2) Copy a playlist from one YouTube account to another");
-    	System.out.print("Choose an option (1 or 2): ");
+    	System.out.println("3) Copy ALL playlists from one YouTube account to another");
+    	System.out.print("Choose an option (1, 2, or 3): ");
     	String choice = scanner.nextLine().trim();
 
     	switch (choice) {
@@ -31,6 +32,9 @@ public class YouTubeProgramMain {
     			break;
     		case "2":
     			runPlaylistCopy(scanner);
+    			break;
+    		case "3":
+    			runAllPlaylistsCopy(scanner);
     			break;
     		default:
     			System.out.println("Invalid option. Exiting.");
@@ -101,8 +105,8 @@ public class YouTubeProgramMain {
      * Copy a playlist from one YouTube account to another.
      *
      * Authenticates twice:
-     *   1. SOURCE account (port 8080, tokens in tokens_source/) — reads the playlist
-     *   2. DESTINATION account (port 8081, tokens in tokens_dest/) — creates & writes the playlist
+     *   1. SOURCE account (port 8080, tokens in tokens_source/) -- reads the playlist
+     *   2. DESTINATION account (port 8081, tokens in tokens_dest/) -- creates & writes the playlist
      *
      * The user signs in with a different Google account each time.
      */
@@ -115,7 +119,7 @@ public class YouTubeProgramMain {
     	// --- Authenticate SOURCE account ---
     	System.out.println();
     	System.out.println("Step 1: Sign in to the SOURCE account (the account that owns the playlist).");
-    	System.out.println("        A browser window will open — sign in with the SOURCE Google account.");
+    	System.out.println("        A browser window will open - sign in with the SOURCE Google account.");
     	System.out.println("        Press Enter to continue...");
     	scanner.nextLine();
 
@@ -170,7 +174,7 @@ public class YouTubeProgramMain {
     	// --- Authenticate DESTINATION account ---
     	System.out.println();
     	System.out.println("Step 2: Sign in to the DESTINATION account (the account to copy INTO).");
-    	System.out.println("        A browser window will open — sign in with the DESTINATION Google account.");
+    	System.out.println("        A browser window will open - sign in with the DESTINATION Google account.");
     	System.out.println("        Press Enter to continue...");
     	scanner.nextLine();
 
@@ -183,7 +187,106 @@ public class YouTubeProgramMain {
 
     	// --- Copy ---
     	System.out.println();
-    	System.out.println("Copying playlist '" + sourcePlaylistId + "' → '" + destTitle + "' ...");
+    	System.out.println("Copying playlist '" + sourcePlaylistId + "' -> '" + destTitle + "' ...");
     	destMethods.copyPlaylistFrom(sourceMethods, sourcePlaylistId, destTitle);
+    }
+
+    /**
+     * Copy ALL playlists from one YouTube account to another.
+     *
+     * Authenticates twice:
+     *   1. SOURCE account (port 8080, tokens in tokens_source/) -- reads all playlists
+     *   2. DESTINATION account (port 8081, tokens in tokens_dest/) -- creates & writes all playlists
+     */
+    private static void runAllPlaylistsCopy(Scanner scanner) throws IOException, GeneralSecurityException {
+    	System.out.println();
+    	System.out.println("=== Copy ALL Playlists Between YouTube Accounts ===");
+
+    	final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+
+    	// --- Authenticate SOURCE account ---
+    	System.out.println();
+    	System.out.println("Step 1: Sign in to the SOURCE account (the account that owns the playlists).");
+    	System.out.println("        A browser window will open - sign in with the SOURCE Google account.");
+    	System.out.println("        Press Enter to continue...");
+    	scanner.nextLine();
+
+    	YouTube sourceService = new YouTube.Builder(httpTransport, AuthYouTube.JSON_FACTORY,
+    			AuthYouTube.authorize(httpTransport, "source", "tokens_source", 8080))
+    			.setApplicationName("YouTubePlaylistCreator")
+    			.build();
+    	YouTubeMethods sourceMethods = new YouTubeMethods(sourceService);
+
+    	java.util.List<Map.Entry<String, String>> playlistEntries =
+    			new java.util.ArrayList<>(sourceMethods.getExtantPlaylists().entrySet());
+
+    	System.out.println("Source account authenticated. Found " + playlistEntries.size() + " playlist(s):");
+    	System.out.println();
+    	int idx = 1;
+    	for (Map.Entry<String, String> entry : playlistEntries) {
+    		System.out.println("  " + idx + ") " + entry.getKey() + "  [" + entry.getValue() + "]");
+    		idx++;
+    	}
+
+    	if (playlistEntries.isEmpty()) {
+    		System.out.println("No playlists found on the source account. Nothing to copy.");
+    		return;
+    	}
+
+    	System.out.println();
+    	System.out.print("Proceed to copy all " + playlistEntries.size() + " playlist(s)? (y/n): ");
+    	String confirm = scanner.nextLine().trim();
+    	if (!confirm.equalsIgnoreCase("y") && !confirm.equalsIgnoreCase("yes")) {
+    		System.out.println("Cancelled.");
+    		return;
+    	}
+
+    	// --- Authenticate DESTINATION account ---
+    	System.out.println();
+    	System.out.println("Step 2: Sign in to the DESTINATION account (the account to copy INTO).");
+    	System.out.println("        A browser window will open - sign in with the DESTINATION Google account.");
+    	System.out.println("        Press Enter to continue...");
+    	scanner.nextLine();
+
+    	YouTube destService = new YouTube.Builder(httpTransport, AuthYouTube.JSON_FACTORY,
+    			AuthYouTube.authorize(httpTransport, "destination", "tokens_dest", 8081))
+    			.setApplicationName("YouTubePlaylistCreator")
+    			.build();
+    	YouTubeMethods destMethods = new YouTubeMethods(destService);
+    	System.out.println("Destination account authenticated.");
+
+    	// --- Copy all playlists ---
+    	System.out.println();
+    	int total = playlistEntries.size();
+    	int playlistNum = 0;
+    	int totalSuccess = 0;
+    	int totalFailed = 0;
+
+    	for (Map.Entry<String, String> entry : playlistEntries) {
+    		playlistNum++;
+    		String title = entry.getKey();
+    		String sourcePlaylistId = entry.getValue();
+
+    		System.out.println();
+    		System.out.println("========================================");
+    		System.out.println("Playlist " + playlistNum + "/" + total + ": " + title + "  [" + sourcePlaylistId + "]");
+    		System.out.println("========================================");
+
+    		try {
+    			destMethods.copyPlaylistFrom(sourceMethods, sourcePlaylistId, title);
+    			totalSuccess++;
+    		} catch (Exception e) {
+    			System.err.println("Failed to copy playlist '" + title + "': " + e.getMessage());
+    			e.printStackTrace();
+    			totalFailed++;
+    		}
+    	}
+
+    	System.out.println();
+    	System.out.println("=== All done! ===");
+    	System.out.println("Playlists copied successfully: " + totalSuccess + "/" + total);
+    	if (totalFailed > 0) {
+    		System.out.println("Playlists that failed: " + totalFailed);
+    	}
     }
 }
