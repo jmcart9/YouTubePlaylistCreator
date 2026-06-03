@@ -1,7 +1,10 @@
 package main.java.quickstart;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -14,6 +17,9 @@ import com.google.api.services.youtube.model.PlaylistSnippet;
 import com.google.api.services.youtube.model.PlaylistStatus;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.PlaylistItemListResponse;
+import com.google.api.services.youtube.model.Subscription;
+import com.google.api.services.youtube.model.SubscriptionListResponse;
+import com.google.api.services.youtube.model.SubscriptionSnippet;
 import com.google.api.services.youtube.model.VideoListResponse;
 
 public class YouTubeMethods {
@@ -320,5 +326,122 @@ public class YouTubeMethods {
                 + " [total now: " + (existingVideoIds.size() + success) + "/" + sourceVideoIds.size() + "]");
         return success;
     }
-    
+
+    /**
+     * Returns an ordered map of channel name -> channel ID for every channel
+     * the authenticated account is subscribed to.
+     *
+     * @throws GoogleJsonResponseException if the API quota is exceeded
+     */
+    public Map<String, String> listSubscriptions() throws GoogleJsonResponseException {
+        Map<String, String> subs = new LinkedHashMap<>();
+        try {
+            YouTube.Subscriptions.List request = service.subscriptions()
+                    .list("snippet")
+                    .setMine(true)
+                    .setMaxResults(50L);
+
+            SubscriptionListResponse response = request.execute();
+            while (response != null && response.getItems() != null) {
+                for (Subscription sub : response.getItems()) {
+                    String channelTitle = sub.getSnippet().getTitle();
+                    String channelId   = sub.getSnippet().getResourceId().getChannelId();
+                    subs.put(channelTitle, channelId);
+                }
+                String nextPage = response.getNextPageToken();
+                if (nextPage == null) break;
+                response = request.setPageToken(nextPage).execute();
+            }
+        } catch (GoogleJsonResponseException e) {
+            System.err.println("Failed to list subscriptions: " + e.getMessage());
+            throw e;
+        } catch (IOException e) {
+            System.err.println("Failed to list subscriptions: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return subs;
+    }
+
+    /**
+     * Subscribe this account to a channel by its channel ID.
+     * Returns true on success, false on failure (e.g. already subscribed).
+     *
+     * @throws GoogleJsonResponseException if the API quota is exceeded
+     */
+    public boolean subscribeToChannel(String channelId) throws GoogleJsonResponseException {
+        try {
+            ResourceId resourceId = new ResourceId();
+            resourceId.setKind("youtube#channel");
+            resourceId.setChannelId(channelId);
+
+            SubscriptionSnippet snippet = new SubscriptionSnippet();
+            snippet.setResourceId(resourceId);
+
+            Subscription subscription = new Subscription();
+            subscription.setSnippet(snippet);
+
+            service.subscriptions().insert("snippet", subscription).execute();
+            return true;
+        } catch (GoogleJsonResponseException e) {
+            // 409 = already subscribed – treat as success and keep going
+            if (e.getStatusCode() == 409) {
+                return true;
+            }
+            throw e;
+        } catch (IOException e) {
+            System.err.println("Failed to subscribe to channel " + channelId + ": " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Copy all subscriptions from a source account into THIS (destination) account.
+     *
+     * @param source YouTubeMethods authenticated as the source account
+     * @return number of channels successfully subscribed to
+     * @throws GoogleJsonResponseException if the API quota is exceeded
+     */
+    public int copySubscriptionsFrom(YouTubeMethods source) throws GoogleJsonResponseException {
+        // 1. Fetch source subscriptions
+        Map<String, String> sourceSubs = source.listSubscriptions();
+        if (sourceSubs.isEmpty()) {
+            System.out.println("Source account has no subscriptions to copy.");
+            return 0;
+        }
+
+        // 2. Fetch existing destination subscriptions to avoid duplicates
+        Map<String, String> destSubs = listSubscriptions();
+        java.util.Set<String> destChannelIds = new java.util.HashSet<>(destSubs.values());
+
+        List<Map.Entry<String, String>> toSubscribe = new ArrayList<>();
+        for (Map.Entry<String, String> entry : sourceSubs.entrySet()) {
+            if (!destChannelIds.contains(entry.getValue())) {
+                toSubscribe.add(entry);
+            }
+        }
+
+        if (toSubscribe.isEmpty()) {
+            System.out.println("All " + sourceSubs.size() + " subscription(s) already exist on the destination account.");
+            return 0;
+        }
+
+        System.out.println(destSubs.size() + " subscription(s) already on destination, "
+                + toSubscribe.size() + " new subscription(s) to add.");
+
+        // 3. Subscribe
+        int success = 0;
+        int total   = toSubscribe.size();
+        for (int i = 0; i < total; i++) {
+            Map.Entry<String, String> entry = toSubscribe.get(i);
+            System.out.println("  Subscribing " + (i + 1) + "/" + total + ": " + entry.getKey()
+                    + "  [" + entry.getValue() + "]");
+            if (subscribeToChannel(entry.getValue())) {
+                success++;
+            }
+        }
+        System.out.println("Done! Subscribed to " + success + "/" + total + " channel(s).");
+        return success;
+    }
+
 }
