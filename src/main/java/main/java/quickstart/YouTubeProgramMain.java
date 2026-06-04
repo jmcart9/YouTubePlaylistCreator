@@ -30,7 +30,9 @@ public class YouTubeProgramMain {
     	System.out.println("1) Create playlists from Gmail notifications");
     	System.out.println("2) Copy a playlist from one YouTube account to another");
     	System.out.println("3) Copy ALL playlists from one YouTube account to another");
-    	System.out.print("Choose an option (1, 2, or 3): ");
+    	System.out.println("4) List channels your account is subscribed to");
+    	System.out.println("5) Copy ALL subscriptions from one YouTube account to another");
+    	System.out.print("Choose an option (1-5): ");
     	String choice = scanner.nextLine().trim();
 
     	switch (choice) {
@@ -42,6 +44,12 @@ public class YouTubeProgramMain {
     			break;
     		case "3":
     			runAllPlaylistsCopy(scanner);
+    			break;
+    		case "4":
+    			runListSubscriptions(scanner);
+    			break;
+    		case "5":
+    			runCopySubscriptions(scanner);
     			break;
     		default:
     			System.out.println("Invalid option. Exiting.");
@@ -321,6 +329,134 @@ public class YouTubeProgramMain {
     		System.out.println();
     		System.out.println("TIP: Re-run after quota resets (midnight PT) to copy the remaining playlists.");
     		System.out.println("     Already-copied playlists will be reused (not duplicated).");
+    	}
+    }
+
+    /**
+     * List all channels the authenticated account is subscribed to.
+     */
+    private static void runListSubscriptions(Scanner scanner) throws IOException, GeneralSecurityException {
+    	System.out.println();
+    	System.out.println("=== List Your Subscriptions ===");
+
+    	final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+
+    	System.out.println();
+    	System.out.println("Sign in to the YouTube account whose subscriptions you want to view.");
+    	System.out.println("A browser window will open. Press Enter to continue...");
+    	scanner.nextLine();
+
+    	YouTube service = new YouTube.Builder(httpTransport, AuthYouTube.JSON_FACTORY,
+    			AuthYouTube.authorize(httpTransport, "source", "tokens_source", 8080))
+    			.setApplicationName("YouTubePlaylistCreator")
+    			.build();
+    	YouTubeMethods methods = new YouTubeMethods(service);
+
+    	System.out.println();
+    	System.out.println("Fetching subscriptions...");
+
+    	try {
+    		java.util.Map<String, String> subs = methods.listSubscriptions();
+    		if (subs.isEmpty()) {
+    			System.out.println("No subscriptions found on this account.");
+    			return;
+    		}
+    		System.out.println();
+    		System.out.println("Subscriptions (" + subs.size() + " total):");
+    		int idx = 1;
+    		for (java.util.Map.Entry<String, String> entry : subs.entrySet()) {
+    			System.out.println("  " + idx + ") " + entry.getKey() + "  [" + entry.getValue() + "]");
+    			idx++;
+    		}
+    	} catch (GoogleJsonResponseException e) {
+    		System.err.println("API error: " + e.getMessage());
+    	}
+    }
+
+    /**
+     * Copy ALL subscriptions from one YouTube account to another.
+     *
+     * Authenticates twice:
+     *   1. SOURCE account (port 8080, tokens in tokens_source/) -- reads subscriptions
+     *   2. DESTINATION account (port 8081, tokens in tokens_dest/) -- creates subscriptions
+     */
+    private static void runCopySubscriptions(Scanner scanner) throws IOException, GeneralSecurityException {
+    	System.out.println();
+    	System.out.println("=== Copy ALL Subscriptions Between YouTube Accounts ===");
+    	System.out.println();
+    	System.out.println("NOTE: Each new subscription costs 50 quota units.");
+    	System.out.println("      The default daily quota is 10,000 units, so you can add up to ~200 new subscriptions per day.");
+
+    	final NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+
+    	// --- Authenticate SOURCE account ---
+    	System.out.println();
+    	System.out.println("Step 1: Sign in to the SOURCE account (the account whose subscriptions you want to copy).");
+    	System.out.println("        A browser window will open - sign in with the SOURCE Google account.");
+    	System.out.println("        Press Enter to continue...");
+    	scanner.nextLine();
+
+    	YouTube sourceService = new YouTube.Builder(httpTransport, AuthYouTube.JSON_FACTORY,
+    			AuthYouTube.authorize(httpTransport, "source", "tokens_source", 8080))
+    			.setApplicationName("YouTubePlaylistCreator")
+    			.build();
+    	YouTubeMethods sourceMethods = new YouTubeMethods(sourceService);
+
+    	System.out.println();
+    	System.out.println("Fetching source subscriptions...");
+    	java.util.Map<String, String> sourceSubs;
+    	try {
+    		sourceSubs = sourceMethods.listSubscriptions();
+    	} catch (GoogleJsonResponseException e) {
+    		System.err.println("Could not fetch source subscriptions: " + e.getMessage());
+    		return;
+    	}
+
+    	if (sourceSubs.isEmpty()) {
+    		System.out.println("Source account has no subscriptions. Nothing to copy.");
+    		return;
+    	}
+
+    	System.out.println("Found " + sourceSubs.size() + " subscription(s) on source account.");
+
+    	System.out.println();
+    	System.out.print("Proceed to copy all " + sourceSubs.size() + " subscription(s)? (y/n): ");
+    	String confirm = scanner.nextLine().trim();
+    	if (!confirm.equalsIgnoreCase("y") && !confirm.equalsIgnoreCase("yes")) {
+    		System.out.println("Cancelled.");
+    		return;
+    	}
+
+    	// --- Authenticate DESTINATION account ---
+    	System.out.println();
+    	System.out.println("Step 2: Sign in to the DESTINATION account (the account to subscribe FROM).");
+    	System.out.println("        A browser window will open - sign in with the DESTINATION Google account.");
+    	System.out.println("        Press Enter to continue...");
+    	scanner.nextLine();
+
+    	YouTube destService = new YouTube.Builder(httpTransport, AuthYouTube.JSON_FACTORY,
+    			AuthYouTube.authorize(httpTransport, "destination", "tokens_dest", 8081))
+    			.setApplicationName("YouTubePlaylistCreator")
+    			.build();
+    	YouTubeMethods destMethods = new YouTubeMethods(destService);
+    	System.out.println("Destination account authenticated.");
+
+    	// --- Copy all subscriptions ---
+    	System.out.println();
+    	try {
+    		int copied = destMethods.copySubscriptionsFrom(sourceMethods);
+    		System.out.println();
+    		System.out.println("=== Subscription Copy Complete ===");
+    		System.out.println("New subscriptions added: " + copied + "/" + sourceSubs.size());
+    		if (copied < sourceSubs.size()) {
+    			System.out.println("TIP: If quota was exceeded, re-run after midnight PT to continue.");
+    			System.out.println("     Already-subscribed channels will be skipped automatically.");
+    		}
+    	} catch (GoogleJsonResponseException e) {
+    		System.err.println();
+    		System.err.println("*** YouTube API quota exceeded during subscription copy! ***");
+    		System.err.println("Re-run after quota resets (midnight Pacific Time) to continue.");
+    		System.err.println("Already-subscribed channels will be skipped automatically.");
     	}
     }
 }
